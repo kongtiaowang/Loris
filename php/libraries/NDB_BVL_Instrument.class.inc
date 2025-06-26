@@ -3091,7 +3091,7 @@ error_log(print_r("22222222222222",true));
 
             // if an enumeration, get the possible option keys
             $optionKeys = match ("{$expectedType}") {
-                "enumeration" => $dictionaryItem->getOptions(),
+                "enumeration" => $expectedType->getOptions(),
                 default       => null
             };
 
@@ -3103,37 +3103,26 @@ error_log(print_r("22222222222222",true));
             );
 
             // run the validation method depending on the field type
-            $isValid = match ("{$expectedType}") {
-                "string", "URI" => $isString($fieldToCheck),
-                "boolean"       => $isBoolean($fieldToCheck),
-                "integer"       => $isInteger($fieldToCheck),
-                "decimal"       => $isFloat($fieldToCheck),
-                "date"          => $isDate($fieldToCheck, $dateFormat),
-                "time"          => $isTime($fieldToCheck, $dateFormat),
-                "duration"      => $isDuration($fieldToCheck),
-                "enumeration"   => $isString($fieldToCheck) && (
-                    $isMultiEnum
-                    // select: the given value must be in the list of options
-                    ? in_array(
-                        $fieldToCheck,
-                        $optionKeys,
-                        true
-                    )
-                    // multi-select: ALL given values must be in the list of options
-                    : array_all(
-                        explode("{@}", $fieldToCheck),
-                        fn($v) => in_array(
-                            $v,
-                            $optionKeys,
-                            true
-                        )
-                    )
-                ),
-                default => throw new \LorisException(
-                    "Unknown type '{$expectedType}' for field: {$fieldToCheck}"
-                )
-            };
-
+$isValid = match ($expectedType) {
+    "string", "URI" => $isString($fieldToCheck),
+    "boolean"       => $isBoolean($fieldToCheck),
+    "integer"       => $isInteger($fieldToCheck),
+    "decimal"       => $isFloat($fieldToCheck),
+    "date"          => $isDate($fieldToCheck, $dateFormat),
+    "time"          => $isTime($fieldToCheck, $dateFormat),
+    "duration"      => $isDuration($fieldToCheck),
+    "enumeration"   => $isString($fieldToCheck) && (
+        $isMultiEnum
+            ? in_array($fieldToCheck, $optionKeys, true)
+            : array_all(
+                explode("{@}", $fieldToCheck),
+                fn($v) => in_array($v, $optionKeys, true)
+            )
+    ),
+    default => throw new \LorisException(
+        "Unknown data type '{$expectedType}' for field '{$fieldName}' with value: {$fieldToCheck}"
+    )
+};
             // if not valid, format exception message
             if (!$isValid) {
                 // expected format
