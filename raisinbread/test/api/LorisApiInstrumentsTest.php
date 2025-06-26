@@ -219,7 +219,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'UserID' => "2"
+                'height_cms' => "2"
             ]
         ];
         $response = $this->client->request(

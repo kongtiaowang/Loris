@@ -3116,17 +3116,18 @@ error_log("optionKeys");
 
 $typeClass = get_class($expectedType);
 
-$isValid = match ($typeClass) {
-    \LORIS\Data\Types\StringType::class, \LORIS\Data\Types\URI::class => $isString($fieldToCheck),
-    \LORIS\Data\Types\Boolean::class   => $isBoolean($fieldToCheck),
-    \LORIS\Data\Types\Integer::class   => $isInteger($fieldToCheck),
-    \LORIS\Data\Types\Decimal::class   => $isFloat($fieldToCheck),
-    \LORIS\Data\Types\Date::class      => $isDate($fieldToCheck, $dateFormat),
-    \LORIS\Data\Types\Time::class      => $isTime($fieldToCheck, $dateFormat),
-    \LORIS\Data\Types\Duration::class  => $isDuration($fieldToCheck),
-    \LORIS\Data\Types\Enumeration::class => true,
+$isValid = match (true) {
+    $expectedType instanceof \LORIS\Data\Types\StringType => $isString($fieldToCheck),
+    $expectedType instanceof \LORIS\Data\Types\URI        => $isString($fieldToCheck), // assume URI is just a string
+    $expectedType instanceof \LORIS\Data\Types\BooleanType => $isBoolean($fieldToCheck),
+    $expectedType instanceof \LORIS\Data\Types\IntegerType => $isInteger($fieldToCheck),
+    $expectedType instanceof \LORIS\Data\Types\DecimalType => $isFloat($fieldToCheck),
+    $expectedType instanceof \LORIS\Data\Types\DateType    => $isDate($fieldToCheck, $dateFormat),
+    $expectedType instanceof \LORIS\Data\Types\TimeType    => $isTime($fieldToCheck, $dateFormat),
+    $expectedType instanceof \LORIS\Data\Types\Duration    => $isDuration($fieldToCheck),
+    $expectedType instanceof \LORIS\Data\Types\Enumeration => true, // or skip validation
     default => throw new \LorisException(
-        "Unknown type '".get_class($expectedType)."' for field '{$fieldName}' with value: {$fieldToCheck}"
+        "Unknown type '" . get_class($expectedType) . "' for field: {$fieldToCheck}"
     )
 };
             // if not valid, format exception message
