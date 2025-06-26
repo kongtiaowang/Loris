@@ -3077,9 +3077,9 @@ error_log(print_r("22222222222222",true));
         foreach ($this->getDataDictionary() as $dictionaryItem) {
             // current fieldname
             $fieldName = $dictionaryItem->fieldname;
-    if (!array_key_exists($fieldName, $instrumentData)) {
-        continue;
-    }
+  //  if (!array_key_exists($fieldName, $instrumentData)) {
+  //      continue;
+  //  }
             // skip filtered out fields
             if (in_array($fieldName, $this->metadataElements, true)) {
                 continue;
