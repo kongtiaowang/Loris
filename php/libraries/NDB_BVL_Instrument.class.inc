@@ -3094,6 +3094,11 @@ error_log(print_r("22222222222222",true));
                 "enumeration" => $expectedType->getOptions(),
                 default       => null
             };
+error_log("optionKeys");
+
+error_log(print_r($optionKeys,true));
+
+error_log("optionKeys");
 
             // is it a single/multi-enumeration
             $isMultiEnum = in_array(
@@ -3103,6 +3108,7 @@ error_log(print_r("22222222222222",true));
             );
 
             // run the validation method depending on the field type
+
 $isValid = match ($expectedType) {
     "string", "URI" => $isString($fieldToCheck),
     "boolean"       => $isBoolean($fieldToCheck),
