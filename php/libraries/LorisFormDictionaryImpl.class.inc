@@ -63,7 +63,7 @@ trait LorisFormDictionaryImpl
         foreach ($elements AS $element) {
             $card = new Cardinality(Cardinality::SINGLE);
             if (!empty($element['label'])) {
-                $label = str_replace("&nbsp;", "", $element['label']);
+                $label = str_replace("&nbsp;", "",(string)$element['label']);
                 $label = trim(preg_replace('/\s+/', ' ', $label));
             } else {
                 $label = trim(preg_replace('/\s+/', ' ', $groupLabel));
