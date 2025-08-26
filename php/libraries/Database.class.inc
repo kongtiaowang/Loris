@@ -48,6 +48,14 @@ class Database implements LoggerAwareInterface
 
     var $_preparedStoreHistory;
 
+
+    private $fields = [];
+    private $table = '';
+    private $conditions = [];
+    private $joins = [];
+
+
+
     /**
      * The name of the database. Used internally for printing log messages.
      *
@@ -1619,4 +1627,93 @@ class Database implements LoggerAwareInterface
             throw new \DatabaseException("Could not use unbuffered queries");
         };
     }
+
+  /**
+     * Specify the fields to select.
+     *
+     * @param array<string> $fields Array of field names to select.
+     * @return $this
+     */
+    public function getFields(array $fields): self
+    {
+        $this->fields = $fields;
+        return $this->executeQuery();
+    }
+
+    /**
+     * Specify the table to select from.
+     *
+     * @param string $table The table name.
+     * @return $this
+     */
+    public function fromTable(string $table): self
+    {
+        $this->table = $table;
+        return $this;
+    }
+
+    /**
+     * Specify the where conditions.
+     *
+     * @param string $condition The SQL condition.
+     * @param array $params The parameters for the condition.
+     * @return $this
+     */
+    public function where(string $condition, array $params = []): self
+    {
+        $this->conditions[] = $condition;
+        // Optionally store parameters if needed
+        return $this;
+    }
+
+    /**
+     * Specify join conditions.
+     *
+     * @param string $table The table to join with.
+     * @param string $condition The join condition.
+     * @return $this
+     */
+    public function join(string $table, string $condition): self
+    {
+        $this->joins[] = "JOIN $table ON $condition";
+        return $this;
+    }
+
+    /**
+     * Execute the constructed query.
+     *
+     * @return array Results of the query.
+     */
+    private function executeQuery(): array
+    {
+        // Build your SQL query
+        $select = implode(', ', $this->fields);
+        $query = "SELECT $select FROM {$this->table}";
+
+        if ($this->joins) {
+            $query .= ' ' . implode(' ', $this->joins);
+        }
+
+        if ($this->conditions) {
+            $query .= ' WHERE ' . implode(' AND ', $this->conditions);
+        }
+
+        // Reset after execution to allow new queries
+        $this->resetQuery();
+
+        // Execute the query
+        return $this->run($query); // Assuming run() is your method to execute the SQL
+    }
+
+    /**
+     * Reset the query parameters.
+     */
+    private function resetQuery(): void
+    {
+        $this->fields = [];
+        $this->table = '';
+        $this->conditions = [];
+        $this->joins = [];
+    }
+}
 }
