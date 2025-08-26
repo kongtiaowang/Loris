@@ -54,6 +54,10 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected $skipSelenium = false;
     /**
+     * Running test using admin user from Raisinbread, password demo20!7
+     */    
+    protected $adminFromRB = false;
+    /**
      * A valid password to use for login tests.
      */
     protected $validPassword = 'sufficient length and complexity';
@@ -146,9 +150,12 @@ abstract class LorisIntegrationTest extends TestCase
             $this->webDriver = RemoteWebDriver::create(
                 $selenium_url,
                 $desired_capabilities
-            );
-
+	    );
+	    if (!$this->adminFromRB) {
             $this->login("UnitTester", $this->validPassword);
+            } else {
+		    $this->login("admin", "demo20!7");
+            }		    
         }
 
         if (extension_loaded('xdebug')
