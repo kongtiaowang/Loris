@@ -285,13 +285,13 @@ jobs:
           # set sandbox to 1 before running the tests
           # since some tests only run in sandbox environments
           sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
-          {
-            timeout 600s npm run tests:${{ matrix.testsuite }}
-          } || true
-          echo "=== /var/log/mysql/error.log ==="
-          sudo cat /var/log/mysql/error.log || true
-          echo "=== journalctl (mysql) ==="
-          sudo journalctl -u mysql.service --no-pager -n 100 || true
+          if ! timeout 600s npm run tests:${{ matrix.testsuite }}; then
+            echo "❌ Tests failed or timed out. Dumping MySQL container logs..."
+            echo "=== Docker containers ==="
+            docker ps -a
+            echo "=== Docker MySQL logs ==="
+            docker logs mariadb || docker logs mysql || docker logs db || echo "⚠️ No MySQL container logs found."
+          fi
       env:
           # Specifies how many jobs you would like to run in parallel,
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
