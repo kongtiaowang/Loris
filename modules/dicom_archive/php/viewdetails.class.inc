@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements the ViewDetails subpage of the dicom_archive module.
  *
@@ -107,12 +108,14 @@ class ViewDetails extends \NDB_Form
         case "tarchive_series":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $tarchiveData = $this->DB->pselect(
-                $query,
-                [
-                    'ID'     => $tarchiveID,
-                    "OField" => $order,
-                ]
+            $tarchiveData = iterator_to_array(
+                $this->DB->pselect(
+                    $query,
+                    [
+                        'ID'     => $tarchiveID,
+                        "OField" => $order,
+                    ]
+                )
             );
 
             if ($this->_setProtocols()) {
@@ -136,12 +139,14 @@ class ViewDetails extends \NDB_Form
         case "tarchive_files":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $tarchiveData = $this->DB->pselect(
-                $query,
-                [
-                    'ID'     => $tarchiveID,
-                    'OField' => $order,
-                ]
+            $tarchiveData = iterator_to_array(
+                $this->DB->pselect(
+                    $query,
+                    [
+                        'ID'     => $tarchiveID,
+                        'OField' => $order,
+                    ]
+                )
             );
             break;
         }
@@ -254,7 +259,7 @@ class ViewDetails extends \NDB_Form
     function _setProtocols()
     {
         try {
-            $query           = "SELECT Scan_type, TR_min, TR_max, TE_min, TE_max,
+            $query           = "SELECT MriScanTypeID, TR_min, TR_max, TE_min, TE_max,
                 TI_min, TI_max, slice_thickness_min, slice_thickness_max FROM
                 mri_protocol";
             $this->protocols = $this->DB->pselect($query, []);
@@ -288,7 +293,7 @@ class ViewDetails extends \NDB_Form
                     $protocol['slice_thickness_max']
                 ))
             ) {
-                return $this->_getProtocolNameFromID($protocol['Scan_type']);
+                return $this->_getProtocolNameFromID($protocol['MriScanTypeID']);
             }
         }
         return "Unknown";
@@ -333,9 +338,10 @@ class ViewDetails extends \NDB_Form
     function _getProtocolNameFromID($id): string
     {
         try {
-            $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
+            $query = "SELECT MriScanTypeName FROM mri_scan_type
+                WHERE MriScanTypeID=:ID";
             $array = $this->DB->pselectRow($query, ['ID' => $id]);
-            return $array['Scan_type'] ?? 'Unknown';
+            return $array['MriScanTypeName'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
         }

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Publication file upload & editing handler
  *
@@ -20,7 +21,7 @@ if (isset($_REQUEST['action'])) {
         editProject();
     } else {
         http_response_code(400);
-        exit;
+        exit(0);
     }
 }
 
@@ -730,12 +731,14 @@ function editCollaborators($id) : void
         }
     }
     // update emails if any have changed
-    $currentCollabs = $db->pselect(
-        'SELECT Name, Email FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
+    $currentCollabs = iterator_to_array(
+        $db->pselect(
+            'SELECT Name, Email FROM publication_collaborator pc '.
+            'LEFT JOIN publication_collaborator_rel pcr '.
+            'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
+            'WHERE pcr.PublicationID=:pid',
+            ['pid' => $id]
+        )
     );
 
     $currCollabEmails      = array_column($currentCollabs, 'email');
@@ -945,5 +948,7 @@ function showPublicationError($message, $code = 500) : void
 
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    exit(json_encode(['message' => $message]));
+
+    print(json_encode(['message' => $message]));
+    exit(0);
 }
