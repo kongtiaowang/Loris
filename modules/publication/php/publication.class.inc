@@ -126,21 +126,21 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->query   = $query;
         $this->headers = [
-            'Title',
-            'Lead Investigator',
-            'Date Proposed',
-            'Approval Status',
-            'Project',
-            'Journal',
-            'Link',
-            'Publishing Status',
-            'Date published',
-            'Project Proposal Creator',
-            'Description',
-            'Collaborators',
-            'Variables Of Interest',
-            'Keywords',
-            'Publication ID',
+            "Title",
+            "Lead Investigator",
+            "Date Proposed",
+            "Approval Status",
+            "Project",
+            "Journal",
+            "Link",
+            "Publishing Status",
+            "Date published",
+            "Project Proposal Creator",
+            "Description",
+            "Collaborators",
+            "Variables Of Interest",
+            "Keywords",
+            "Publication ID",
         ];
 
         $this->validFilters = [
@@ -185,58 +185,61 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->addBasicText(
             'title',
-            'Title'
+            "Title"
         );
         $this->addSelect(
             'approvalStatus',
-            'Approval Status',
+            "Approval Status",
             $statusOptions
         );
 
         // filters by name
         $this->addBasicText(
             'leadInvestigator',
-            'Lead Investigator'
+            "Lead Investigator"
         );
 
         //also filters by name
         $this->addBasicText(
             'collaborators',
-            'Collaborators'
+            "Collaborators"
         );
 
         $this->addBasicText(
             'keywords',
-            'Keywords'
+            "Keywords"
         );
 
         $this->addBasicText(
             'variablesOfInterest',
-            'Variables of Interest'
+            "Variables of Interest"
         );
 
         $this->addBasicText(
             'journal',
-            'Journal'
+            "Journal"
         );
 
         $this->addSelect(
             'project',
-            'Project',
+            "Project",
             $projectOptions
         );
 
         $this->addBasicText(
             'link',
-            'Link'
+            "Link"
         );
+
+        $pubPublished  = "Published";
+        $pubInProgress = "In Progress";
 
         $this->addSelect(
             'publishingStatus',
-            'Publishing Status',
+            "Publishing Status",
             [
-                'Published'   => 'Published',
-                'In Progress' => 'In Progress'
+                $pubPublished  => $pubPublished,
+                $pubInProgress => $pubInProgress,
             ]
         );
     }
