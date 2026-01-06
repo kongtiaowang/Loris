@@ -281,8 +281,6 @@ jobs:
       run: |
         if [ "${{ matrix.php }}" = "8.3" ]; then
           cp composer.lock.php83 composer.lock
-        else
-          cp composer.lock.php84 composer.lock
         fi
 
     - name: Install composer dependencies
