@@ -13,7 +13,7 @@ jobs:
     steps: 
       - uses: actions/checkout@v4
 
-      - name: Install protoc-gen-js plugin
+       - name: Install protoc-gen-js plugin
         run: npm install -g protoc-gen-js
 
       - name: Install EEG package dependencies
@@ -262,9 +262,6 @@ jobs:
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.3/${{ matrix.php }}/g" Dockerfile.test.php8
 
-    - name: Install protoc-gen-js plugin
-      run: npm install -g protoc-gen-js
-
     - name: Install package dependencies
       # We only need to install protobuf-compiler
       # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
@@ -276,6 +273,21 @@ jobs:
            libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler gettext
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+
+      - name: Install protoc-gen-js
+        run: |
+          curl -L -o protobuf-js.zip https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-linux-x86_64.zip
+          unzip protobuf-js.zip -d protobuf-js
+          sudo mv protobuf-js/bin/protoc-gen-js /usr/local/bin/protoc-gen-js
+          sudo chmod +x /usr/local/bin/protoc-gen-js
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate JS protobuf files
+        run: |
+          protoc protocol-buffers/chunk.proto \
+            --js_out=import_style=commonjs,binary:./src/
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
