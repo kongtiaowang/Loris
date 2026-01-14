@@ -371,6 +371,7 @@ jobs:
           set -e
           git fetch origin 28.0-release
           git checkout 28.0-release
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-06-BiobankTables.sql
           for f in SQL/New_patches/*.sql; do
             echo "Running $f"
             mysql ${DB_DATABASE} -uroot -proot < "$f"
