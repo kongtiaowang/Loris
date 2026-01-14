@@ -357,9 +357,6 @@ jobs:
         run: |
           set -e
 
-          CURRENT_BRANCH=$(git branch --show-current)
-          echo "Current branch: $CURRENT_BRANCH"
-
           git fetch origin 27.0-release
           git checkout 27.0-release
 
