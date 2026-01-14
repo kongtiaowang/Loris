@@ -353,3 +353,20 @@ jobs:
 
           echo "Database is empty after final migration"
 
+      - name: Run 27.0 base schema (0000-000-00)
+        run: |
+          set -e
+
+          CURRENT_BRANCH=$(git branch --show-current)
+          echo "Current branch: $CURRENT_BRANCH"
+
+          git fetch origin 27.0-release
+          git checkout 27.0-release
+
+          for f in SQL/[0-0][0-9][0-9][0-9]-*.sql; do
+            echo "--------------------------------------------------"
+            echo "Running schema: $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+          git checkout "$CURRENT_BRANCH"
