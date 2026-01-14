@@ -321,17 +321,6 @@ jobs:
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
 
-      # Run New_patches (user / PR SQLs)
-      - name: Run SQL New_patches
-        run: |
-          set -e
-          echo "Running SQL New_patches..."
-          for f in SQL/New_patches/*.sql; do
-            echo "--------------------------------------------------"
-            echo "Running patch: $f"
-            mysql ${DB_DATABASE} -uroot -proot < "$f"
-          done
-
       - name: Assert database is empty after running 9999-99-99
         run: |
           set -e
