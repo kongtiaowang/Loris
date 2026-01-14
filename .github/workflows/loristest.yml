@@ -365,5 +365,5 @@ jobs:
             echo "Running schema: $f"
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
-
+          git fetch origin 28.0-release
           git checkout 28.0-release
