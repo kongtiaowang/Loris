@@ -366,4 +366,16 @@ jobs:
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
           git fetch origin 28.0-release
+
+      - name: Run SQL New_patches
+        run: |
+          set -e
+
+          for f in SQL/New_patches/*.sql; do
+            echo "Running $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+
+
           git checkout 28.0-release
