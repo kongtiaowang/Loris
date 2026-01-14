@@ -419,3 +419,49 @@ jobs:
         fi
 
         echo "Database is empty ✅"
+
+
+      - name: Run 27.0 base schema (0000-000-001)
+        run: |
+          set -e
+
+          CURRENT_BRANCH=$(git branch --show-current)
+          echo "Current branch: $CURRENT_BRANCH"
+
+          git fetch origin 27.0-release
+          git checkout 27.0-release
+
+          for f in SQL/[0-0][0-9][0-9][0-9]-*.sql; do
+            echo "--------------------------------------------------"
+            echo "Running schema: $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+        git checkout "$CURRENT_BRANCH"
+
+
+      - name: Run SQL New_patches
+        run: |
+          set -e
+
+          for f in SQL/New_patches/*.sql; do
+            echo "Running $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+
+      - name: Assert database is empty after 9999 drop
+        run: |
+          set -e
+
+          mysql ${DB_DATABASE} -uroot -proot < SQL/9999-99-99-drop_tables.sql
+
+          TABLE_COUNT=$(mysql ${DB_DATABASE} -uroot -proot -N -e "
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_schema = '${DB_DATABASE}';
+          ")
+
+          if [ "$TABLE_COUNT" -ne 0 ]; then
+            echo "ERROR: Database is NOT empty!"
+
