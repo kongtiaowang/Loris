@@ -369,7 +369,8 @@ jobs:
       - name: Run SQL New_patches
         run: |
           set -e
-
+          git fetch origin 28.0-release
+          git checkout 28.0-release
           for f in SQL/New_patches/*.sql; do
             echo "Running $f"
             mysql ${DB_DATABASE} -uroot -proot < "$f"
