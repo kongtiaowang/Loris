@@ -369,4 +369,4 @@ jobs:
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
 
-          git checkout "$CURRENT_BRANCH"
+          git checkout 28.0-release
