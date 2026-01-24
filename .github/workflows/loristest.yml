@@ -191,6 +191,15 @@ jobs:
         echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\)
         echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\) | mysql ${{env.DB_DATABASE}} -uroot -proot
 
+    - name: Check MySQL error
+      run: |
+        if [ -f /tmp/mysql_error_flag ]; then
+          echo "MySQL is not responding. Starting MySQL container..."
+          docker compose up -d db
+        else
+          echo "MySQL is up and running."
+        fi
+        
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -204,6 +213,31 @@ jobs:
       run: |
            sleep 1
            curl -v http://localhost:8000
+
+
+    - name: Wait for MySQL to be ready
+      run: |
+          max_attempts=10
+          attempt=0
+          echo "Waiting for mysqld..."
+          while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent; do
+            sleep 1
+            attempt=$((attempt + 1))
+            echo "$attempt attempts"
+            
+            if [ "$attempt" -ge "$max_attempts" ]; then
+              echo "MySQL did not respond after $max_attempts attempts. Creating a flag for GitHub Actions..."
+              echo "MySQL not started" > /tmp/mysql_error_flag
+              break
+            fi
+          done
+
+          if [ -f /tmp/mysql_error_flag ]; then
+            echo "MySQL is not responding. Please check the logs."
+            exit 1
+          else
+            echo "MySQL is up and running."
+          fi
 
 
     - name: Run Test Suite

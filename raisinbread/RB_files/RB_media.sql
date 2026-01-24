@@ -1,4 +1,4 @@
-SET FOREIGN_KEY_CHECKS=0;
+fjdlksajflkdasSET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `media`;
 LOCK TABLES `media` WRITE;
 INSERT INTO `media` (`id`, `session_id`, `instrument`, `date_taken`, `comments`, `file_name`, `file_type`, `data_dir`, `uploaded_by`, `hide_file`, `last_modified`, `language_id`) VALUES (1,2,NULL,'1001-01-01',NULL,'MTL002_V1.py','text/x-python-script','/data/uploads/','admin',0,'2016-08-11 18:10:57',NULL);
