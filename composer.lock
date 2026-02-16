@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d97b8511a8aadec7e4d15aa08d9e7215",
+    "content-hash": "be13f42dbb48c47656e68aa035ecbd95",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2343,16 +2343,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "v6.x-dev",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "0b74d78fcf4a58a4cad7dfc57c46744da725e9ac"
+                "reference": "072872a257bc2de31daeaa998ae39db0821a2b8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/0b74d78fcf4a58a4cad7dfc57c46744da725e9ac",
-                "reference": "0b74d78fcf4a58a4cad7dfc57c46744da725e9ac",
+                "url": "https://api.github.com/repos/phan/phan/zipball/072872a257bc2de31daeaa998ae39db0821a2b8e",
+                "reference": "072872a257bc2de31daeaa998ae39db0821a2b8e",
                 "shasum": ""
             },
             "require": {
@@ -2385,7 +2385,6 @@
                 "ext-tokenizer": "Needed for fallback/polyfill parser support and file/line-based suppressions.",
                 "ext-var_representation": "Suggested for converting values to strings in issue messages"
             },
-            "default-branch": true,
             "bin": [
                 "phan",
                 "phan_client",
@@ -2424,9 +2423,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phan/phan/issues",
-                "source": "https://github.com/phan/phan/tree/v6"
+                "source": "https://github.com/phan/phan/tree/6.0.1"
             },
-            "time": "2026-02-09T12:39:05+00:00"
+            "time": "2026-02-08T23:04:04+00:00"
         },
         {
             "name": "phan/tolerant-php-parser",
@@ -5326,7 +5325,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "phan/phan": 20,
         "php-webdriver/webdriver": 20
     },
     "prefer-stable": false,
