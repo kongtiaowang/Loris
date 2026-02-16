@@ -122,7 +122,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "examiner_location",
             "Examiner location",
             array(
-                null               => '',
+                ""                 => '',
                 "examiner"         => "Examiner",
                 "in_room_observer" => "In-Room Observer",
                 "behind_mirror"    => "Behind Mirror",

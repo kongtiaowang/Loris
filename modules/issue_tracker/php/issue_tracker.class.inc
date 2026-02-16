@@ -142,6 +142,9 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             );
         }
         foreach ($reporter_expanded as $r_row) {
+            if (empty($r_row['Real_name'])) {
+                continue;
+            }
             $reporters[$r_row['Real_name']] = $r_row['Real_name'];
         }
 
@@ -156,6 +159,9 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             []
         );
         foreach ($assignee_expanded as $a_row) {
+            if (empty($a_row['Real_name'])) {
+                continue;
+            }
             $assignees[$a_row['Real_name']] = $a_row['Real_name'];
         }
 
