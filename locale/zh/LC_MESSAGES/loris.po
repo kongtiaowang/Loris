@@ -497,7 +497,7 @@ msgstr "完成"
 
 msgid "Instrument"
 msgid_plural "Instruments"
-msgstr[0] "仪器"
+msgstr[0] "研究工具"
 
 msgid "None"
 msgstr "无"

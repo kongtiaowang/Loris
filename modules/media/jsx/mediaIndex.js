@@ -306,7 +306,8 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'media', frStrings);
   i18n.addResourceBundle('ja', 'media', jaStrings);
   i18n.addResourceBundle('hi', 'media', hiStrings);
-  i18n.addResourceBundle('zh', 'media', zhStrings);	
+  i18n.addResourceBundle('zh', 'media', zhStrings);
+
   const Index = withTranslation(
     ['media', 'loris']
   )(MediaIndex);

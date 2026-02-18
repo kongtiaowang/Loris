@@ -28,7 +28,7 @@ msgid "File Name"
 msgstr "文件名"
 
 msgid "Instrument"
-msgstr "仪器"
+msgstr "研究工具"
 
 msgid "Uploaded By"
 msgstr "上传者"
