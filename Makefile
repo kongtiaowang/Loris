@@ -5,6 +5,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	locale/zh/LC_MESSAGES/loris.po \
 	modules/biobank/locale/fr/LC_MESSAGES/biobank.po \
 	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
@@ -110,6 +111,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/battery_manager/locale/fr/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po \
+	modules/battery_manager/locale/zh/LC_MESSAGES/battery_manager.po \
 	modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po \
 	modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.po \
 	modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po \
@@ -201,6 +203,9 @@ locales: $(MOFILES) $(I18NJSONFILES)
 
 acknowledgements: $(filter modules/acknowledgements/%,$(MOFILES)) $(filter modules/acknowledgements/%,$(I18NJSONFILES))
 	target=acknowledgements npm run compile
+
+battery_manager: $(filter modules/battery_manager/%,$(MOFILES)) $(filter modules/battery_manager/%,$(I18NJSONFILES))
+	target=battery_manager npm run compile
 
 create_timepoint: $(filter modules/create_timepoint/%,$(MOFILES)) $(filter modules/create_timepoint/%,$(I18NJSONFILES))
 	target=data_release npm run compile
