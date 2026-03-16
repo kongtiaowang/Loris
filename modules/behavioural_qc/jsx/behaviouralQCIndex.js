@@ -68,7 +68,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'behavioural_qc', frStrings);
   i18n.addResourceBundle('ja', 'behavioural_qc', jaStrings);
   i18n.addResourceBundle('hi', 'behavioural_qc', hiStrings);
-  i18n.addResourceBundle('zh', 'behavioural_qc', zhStrings);	
+  i18n.addResourceBundle('zh', 'behavioural_qc', zhStrings);
   const Index = withTranslation(
     ['behavioural_qc', 'loris']
   )(BehaviouralQC);
