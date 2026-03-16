@@ -84,6 +84,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po \
+	modules/candidate_list/locale/zh/LC_MESSAGES/candidate_list.po \
 	modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po \
