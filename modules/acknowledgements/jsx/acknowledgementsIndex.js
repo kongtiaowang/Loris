@@ -17,7 +17,7 @@ import {
   DateElement,
   ButtonElement,
 } from 'jsx/Form';
-import zhStrings from '../locale/zh/LC_MESSAGES/acknowledgements.json';
+//import zhStrings from '../locale/zh/LC_MESSAGES/acknowledgements.json';
 
 
 /**
