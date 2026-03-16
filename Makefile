@@ -81,6 +81,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/conflict_resolver/locale/fr/LC_MESSAGES/conflict_resolver.po \
 	modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po \
 	modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po \
+	modules/conflict_resolver/locale/zh/LC_MESSAGES/conflict_resolver.po \
 	modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po \

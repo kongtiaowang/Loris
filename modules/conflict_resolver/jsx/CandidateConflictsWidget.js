@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
 import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -22,6 +23,7 @@ function CandidateConflictsWidget(props) {
     const instruments = getInstruments(props.Conflicts);
     i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
     i18n.addResourceBundle('fr', 'conflict_resolver', frStrings);
+    i18n.addResourceBundle('zh', 'conflict_resolver', zhStrings);	  
     c3.generate({
       bindto: '#conflictschart',
       data: {
