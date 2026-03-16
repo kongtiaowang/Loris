@@ -25,7 +25,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po \
 	modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po \
 	modules/configuration/locale/ja/LC_MESSAGES/configuration.po \
-        modules/configuration/locale/zh/LC_MESSAGES/configuration.po \
+    modules/configuration/locale/zh/LC_MESSAGES/configuration.po \
 	modules/oidc/locale/ja/LC_MESSAGES/oidc.po \
 	modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.po \
