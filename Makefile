@@ -55,6 +55,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/behavioural_qc/locale/fr/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po \
+	modules/behavioural_qc/locale/zh/LC_MESSAGES/behavioural_qc.po \
 	modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po \
 	modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po \
 	modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po \
