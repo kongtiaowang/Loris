@@ -90,6 +90,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/brainbrowser/locale/fr/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po \
+	modules/brainbrowser/locale/zh/LC_MESSAGES/brainbrowser.po \
 	modules/dataquery/locale/fr/LC_MESSAGES/dataquery.po \
 	modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po \
 	modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po \
