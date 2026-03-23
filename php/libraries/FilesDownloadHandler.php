@@ -66,7 +66,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
                 ['GET']
             );
         }
-        //Use basename to remove path traversal characters.
+
         $filename = $request->getAttribute('filename');
 
         if (empty($filename)) {
@@ -75,12 +75,30 @@ class FilesDownloadHandler implements RequestHandlerInterface
             );
         }
 
-        assert(is_string($filename) || $filename instanceof \Stringable);
-        $filename = urldecode(\Utility::resolvePath(strval($filename)));
+        // [Security Fix] Prevent directory traversal
+        // Get base path and ensure it ends with a separator
+        $baseDir = rtrim($this->downloadDirectory->getPathname(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        
+        $filename = urldecode(strval($filename));
+        
+        $unifiedBaseDir = str_replace('\\', '/', $baseDir);
+        $unifiedPath = $unifiedBaseDir . $filename;
+        $unifiedPath = str_replace('\\', '/', $unifiedPath);
 
-        $targetPath = \Utility::appendForwardSlash(
-            $this->downloadDirectory->getPathname()
-        ) . $filename;
+        $pattern = '/\/\.(?:\.)?\/+/';
+        while (preg_match($pattern, $unifiedPath)) {
+            $unifiedPath = preg_replace($pattern, '/', $unifiedPath);
+        }
+        
+        $unifiedPath = preg_replace('/\/+/', '/', $unifiedPath);
+
+        if (strpos($unifiedPath, $unifiedBaseDir) !== 0) {
+            return new \LORIS\Http\Response\JSON\Forbidden("Access denied: Path traversal detected.");
+        }
+
+        $targetPath = str_replace('/', DIRECTORY_SEPARATOR, $unifiedPath);
+
+        // [Security Fix End]
 
         if (!file_exists($targetPath)) {
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -100,7 +118,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         return (new \LORIS\Http\Response\JSON\OK())
             ->withHeader(
                 'Content-Disposition',
-                'attachment; filename=' . urlencode($filename)
+                'attachment; filename=' . urlencode(basename($filename))
             )
             ->withHeader(
                 'Content-Type',
@@ -109,4 +127,3 @@ class FilesDownloadHandler implements RequestHandlerInterface
             ->withBody(new \LORIS\Http\FileStream($targetPath));
     }
 }
-
