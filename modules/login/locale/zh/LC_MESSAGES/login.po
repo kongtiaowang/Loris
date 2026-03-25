@@ -23,7 +23,7 @@ msgid "Login"
 msgstr "登录"
 
 msgid "Login to LORIS"
-msgstr "登录洛里斯"
+msgstr "登录到LORIS"
 
 msgid "Forgot your password?"
 msgstr "忘记密码了吗？"
@@ -60,7 +60,7 @@ msgid "Return to Login Page"
 msgstr "返回登录页面"
 
 msgid "Choose your site:"
-msgstr "选择您的网站："
+msgstr "选择您的站点："
 
 msgid "Choose your project:"
 msgstr "选择您的项目："
@@ -72,7 +72,7 @@ msgid "Radiologist"
 msgstr "放射科医生"
 
 msgid "Examiner role"
-msgstr "考官角色"
+msgstr "检查员角色"
 
 msgid ""
 "Please fill in the form below to request a LORIS account. We will contact "
