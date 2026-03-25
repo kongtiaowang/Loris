@@ -29,7 +29,7 @@ msgid "Help ID"
 msgstr "帮助ID"
 
 msgid "Topic"
-msgstr "话题"
+msgstr "主题"
 
 msgid "Content"
 msgstr "内容"
@@ -52,9 +52,7 @@ msgstr "出了点问题"
 msgid "Try again"
 msgstr "再试一次"
 
-msgid ""
-"Help content cannot be added to an instrument that has already been "
-"registered."
+msgid "Help content cannot be added to an instrument that has already been registered."
 msgstr "无法将帮助内容添加到已注册的仪器中。"
 
 msgid "Adding help content for a specific instrument"
