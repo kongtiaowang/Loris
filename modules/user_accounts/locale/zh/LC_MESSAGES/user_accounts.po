@@ -58,19 +58,13 @@ msgstr "您提交的表格包含数据输入错误"
 msgid "Notes"
 msgstr "笔记"
 
-msgid ""
-"It is recommended to use an email address as the username, for clarity and "
-"uniqueness."
+msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
 msgstr "为了清晰和唯一性，建议使用电子邮件地址作为用户名。"
 
-msgid ""
-"When generating a new password, please notify the user by checking 'Send "
-"email to user' box below!"
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
 msgstr "生成新密码时，请选中下面的“向用户发送电子邮件”框来通知用户！"
 
-msgid ""
-"You must leave the password field empty if you want the system to generate "
-"one for you"
+msgid "You must leave the password field empty if you want the system to generate one for you"
 msgstr "如果您希望系统为您生成密码，则必须将密码字段留空"
 
 msgid "Add/Edit User"
@@ -145,8 +139,7 @@ msgstr "监事"
 msgid "You cannot enter a user name if you want it to match the email address"
 msgstr "如果您希望用户名与电子邮件地址匹配，则无法输入用户名"
 
-msgid ""
-"You must enter a user name or choose to make it match the email address"
+msgid "You must enter a user name or choose to make it match the email address"
 msgstr "您必须输入用户名或选择使其与电子邮件地址匹配"
 
 msgid "The user name already exists"
