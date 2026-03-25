@@ -79,8 +79,7 @@ msgstr "同名的文件已存在！"
 msgid "Would you like to overwrite existing file?"
 msgstr "您想覆盖现有文件吗？"
 
-msgid ""
-"Note that the version associated with the file will also be overwritten."
+msgid "Note that the version associated with the file will also be overwritten."
 msgstr "请注意，与该文件关联的版本也将被覆盖。"
 
 msgid "Choose a specific file or an entire release below"
