@@ -23,10 +23,10 @@ msgid "Module Manager"
 msgstr "模块管理器"
 
 msgid "Name"
-msgstr "姓名"
+msgstr "名字"
 
 msgid "Full Name"
-msgstr "姓名"
+msgstr "全名"
 
 msgid "Could not update {{name}}"
 msgstr "无法更新{{name}}"
