@@ -25,9 +25,7 @@ msgstr "创建时间点"
 msgid "No cohorts defined for project: {{project}}"
 msgstr "没有为项目定义群组：{{project}}"
 
-msgid ""
-"No visit labels defined for the combination project: {{project}} and cohort:"
-" {{cohort}}"
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
 msgstr "没有为组合项目定义访问标签：{{project}} 和队列：{{cohort}}"
 
 msgid "Timepoint created."
