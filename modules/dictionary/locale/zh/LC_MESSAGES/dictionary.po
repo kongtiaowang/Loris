@@ -65,10 +65,10 @@ msgid "Unique"
 msgstr "独特的"
 
 msgid "Single"
-msgstr "单身的"
+msgstr "单独的"
 
 msgid "Optional"
-msgstr "选修的"
+msgstr "可选的"
 
 msgid "Many"
 msgstr "许多"
