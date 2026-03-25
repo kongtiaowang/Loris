@@ -41,7 +41,7 @@ msgid "First Visit"
 msgstr "第一次访问"
 
 msgid "Instrument Order"
-msgstr "仪器订购"
+msgstr "量表顺序"
 
 msgid "Double Data Entry Enabled"
 msgstr "启用双数据输入"
