@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Conflict Resolver"
-msgstr "冲突解决者"
+msgstr "冲突解决"
 
 msgid "Data entry conflict"
 msgstr "数据输入冲突"
@@ -68,17 +68,13 @@ msgid "User 2"
 msgstr "用户2"
 
 msgid "Resolver"
-msgstr "旋转变压器"
+msgstr "解决"
 
 msgid "Resolution Timestamp"
-msgstr "分辨率时间戳"
+msgstr "解决时间戳"
 
-msgid ""
-"Click on instrument in legend to visit conflict resolver for that instrument"
-" across all visits."
+msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
 msgstr "单击图例中的仪器可在所有访问中访问该仪器的冲突解决程序。"
 
-msgid ""
-"Click on bar in graph to visit conflict resolver for that visit and "
-"instrument combination."
+msgid "Click on bar in graph to visit conflict resolver for that visit and instrument combination."
 msgstr "单击图表中的栏可访问该访问和工具组合的冲突解决程序。"
