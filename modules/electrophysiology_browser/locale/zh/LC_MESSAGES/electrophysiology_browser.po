@@ -365,7 +365,7 @@ msgid "Channel(s) associated with the event"
 msgstr "与事件关联的频道"
 
 msgid "Endorsement successful"
-msgstr "代言成功"
+msgstr "认可成功"
 
 msgid "Column Name"
 msgstr "列名称"
