@@ -32,7 +32,7 @@ msgid "Site Scans"
 msgstr "站点扫描"
 
 msgid "Site Recruitment"
-msgstr "现场招聘"
+msgstr "站点招募"
 
 msgid "-- Clear Selection --"
 msgstr "-- 清除选择 --"
@@ -92,16 +92,16 @@ msgid "{{total}} total participants."
 msgstr "{{total}} 参与者总数。"
 
 msgid "Overall Recruitment"
-msgstr "整体招聘"
+msgstr "整体招募"
 
 msgid "Recruitment"
-msgstr "招聘"
+msgstr "招募"
 
 msgid "Overall"
 msgstr "全面的"
 
 msgid "Site Breakdown"
-msgstr "网站细分"
+msgstr "站点细分"
 
 msgid "Project Breakdown"
 msgstr "项目分解"
