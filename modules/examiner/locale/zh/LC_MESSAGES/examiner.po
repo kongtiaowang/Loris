@@ -20,13 +20,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Examiner"
-msgstr "考官"
+msgstr "检查员"
 
 msgid "Edit Examiner"
-msgstr "编辑考官"
+msgstr "编辑检查员"
 
 msgid "Examiner added."
-msgstr "考官补充道。"
+msgstr "检查员已经添加。"
 
 msgid "Add Examiner"
 msgstr "添加考官"
@@ -47,7 +47,7 @@ msgid "Certification"
 msgstr "认证"
 
 msgid "This user has no site affiliations"
-msgstr "该用户没有网站隶属关系"
+msgstr "该用户没有站点隶属关系"
 
 msgid "Edit Certification for"
 msgstr "编辑认证"
