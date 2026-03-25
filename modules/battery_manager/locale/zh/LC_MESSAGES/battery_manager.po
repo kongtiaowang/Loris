@@ -113,7 +113,7 @@ msgid ""
 msgstr "您无法编辑一个条目以使其具有与另一个活动条目相同的值。"
 
 msgid "Search for instrument"
-msgstr "搜索仪器"
+msgstr "搜索量表"
 
 msgid "Search for site"
 msgstr "搜索站点"
