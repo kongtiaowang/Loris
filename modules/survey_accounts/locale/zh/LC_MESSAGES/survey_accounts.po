@@ -21,4 +21,4 @@ msgstr ""
 
 # I am not sure if this is the right kanji for "survey"
 msgid "Survey Accounts"
-msgstr "调查账户"
+msgstr "调查问卷账户"
