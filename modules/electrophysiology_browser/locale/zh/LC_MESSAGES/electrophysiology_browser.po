@@ -106,7 +106,7 @@ msgid "Add Event"
 msgstr "添加事件"
 
 msgid "Zoom"
-msgstr "飞涨"
+msgstr "缩放"
 
 msgid "Fit to Window"
 msgstr "适合窗户"
