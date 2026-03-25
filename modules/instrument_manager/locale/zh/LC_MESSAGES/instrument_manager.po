@@ -20,4 +20,4 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Instrument Manager"
-msgstr "仪器管理器"
+msgstr "量表管理"
