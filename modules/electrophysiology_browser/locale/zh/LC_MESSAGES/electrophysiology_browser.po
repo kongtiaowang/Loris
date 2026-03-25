@@ -474,10 +474,10 @@ msgid "Edit Event"
 msgstr "编辑事件"
 
 msgid "Select from Montage"
-msgstr "从蒙太奇中选择"
+msgstr "选择电极布局"
 
 msgid "Select Channels"
-msgstr "选择频道"
+msgstr "选择通道"
 
 msgid "Additional Columns"
 msgstr "附加栏"
@@ -554,10 +554,10 @@ msgid "Misc Channel Count"
 msgstr "其他通道数"
 
 msgid "CogAtlas ID"
-msgstr "CogAtlas ID"
+msgstr "CogAtlas ID（认知地图ID）"
 
 msgid "CogPO ID"
-msgstr "CogPO ID"
+msgstr "CogPO ID（认知过程本体ID）"
 
 msgid "Institution Name"
 msgstr "机构名称"
