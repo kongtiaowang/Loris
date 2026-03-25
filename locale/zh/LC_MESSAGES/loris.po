@@ -57,7 +57,7 @@ msgstr "个人设置"
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
-msgstr "行政"
+msgstr "管理"
 
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
@@ -425,10 +425,8 @@ msgstr "确认密码"
 msgid "Email address is required"
 msgstr "电子邮件地址为必填项"
 
-msgid ""
-"Email address cannot contain any of the following characters: <, >, &, and "
-"\""
-msgstr "电子邮件地址不能包含以下任何字符：<、>、& 和 \""
+msgid "Email address cannot contain any of the following characters: <, >, &, and "
+msgstr "电子邮件地址不能包含以下任何字符：<、>、& 和 \"
 
 msgid "The password must be at least 8 characters long."
 msgstr "密码长度必须至少为 8 个字符。"
@@ -439,9 +437,7 @@ msgstr "密码不能是您的用户名或电子邮件地址。"
 msgid "Please choose a unique password."
 msgstr "请选择一个唯一的密码。"
 
-msgid ""
-"No special characters are required but your password must be sufficiently "
-"complex to be accepted."
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
 msgstr "不需要特殊字符，但您的密码必须足够复杂才能被接受。"
 
 msgid "We suggest using a password manager to generate one for you."
