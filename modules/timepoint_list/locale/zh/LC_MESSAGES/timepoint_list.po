@@ -67,15 +67,14 @@ msgstr "EDC时代"
 msgid "Biological Sex"
 msgstr "生物性别"
 
-msgid ""
-"You do not have access to any timepoints registered for this candidate."
+msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "您无权访问为此候选人注册的任何时间点。"
 
 msgid " y / "
-msgstr "y /"
+msgstr "年 /"
 
 msgid " m"
-msgstr "米"
+msgstr " 月"
 
 msgid "Not Done"
 msgstr "未完成"
