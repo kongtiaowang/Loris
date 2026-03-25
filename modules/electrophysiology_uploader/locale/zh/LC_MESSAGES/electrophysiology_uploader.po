@@ -25,10 +25,7 @@ msgstr "电生理学上传者"
 msgid "LORIS 26 Beta Note:"
 msgstr "LORIS 26 Beta 注意："
 
-msgid ""
-"Files uploaded in this module will not be viewable in the Electrophysiology "
-"Browser module. This feature is under construction for the next release. "
-"Please get in touch with the LORIS team to configure this for your project."
+msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
 msgstr "在此模块中上传的文件将无法在电生理学浏览器模块中查看。此功能正在为下一版本构建。请与 LORIS 团队联系，为您的项目进行配置。"
 
 msgid "Upload an electrophysiology recording session"
@@ -86,7 +83,7 @@ msgid "Upload Time"
 msgstr "上传时间"
 
 msgid "Status"
-msgstr "地位"
+msgstr "状态"
 
 msgid "Uploaded By"
 msgstr "上传者"
