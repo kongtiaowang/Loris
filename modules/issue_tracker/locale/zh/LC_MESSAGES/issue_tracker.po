@@ -38,10 +38,10 @@ msgid "Issue ID"
 msgstr "问题ID"
 
 msgid "Reporter"
-msgstr "记者"
+msgstr "报告人"
 
 msgid "Assignee"
-msgstr "受让人"
+msgstr "分配"
 
 msgid "Priority"
 msgstr "优先事项"
@@ -80,7 +80,7 @@ msgid "Low"
 msgstr "低的"
 
 msgid "All Sites"
-msgstr "所有网站"
+msgstr "所有站点"
 
 msgid "All Issues"
 msgstr "所有问题"
@@ -95,7 +95,7 @@ msgid "My Issues"
 msgstr "我的问题"
 
 msgid "New Issue"
-msgstr "新一期"
+msgstr "新问题"
 
 msgid "Browse Issues"
 msgstr "浏览问题"
@@ -140,10 +140,10 @@ msgid "Description"
 msgstr "描述"
 
 msgid "Watching?"
-msgstr "在看吗？"
+msgstr "观察吗？"
 
 msgid "Add others to watching?"
-msgstr "添加其他人观看？"
+msgstr "添加其他人观察？"
 
 msgid "New Comment"
 msgstr "新评论"
@@ -240,13 +240,13 @@ msgid "Behavioural Battery"
 msgstr "行为电池"
 
 msgid "Behavioural Instruments"
-msgstr "行为仪器"
+msgstr "行为量表"
 
 msgid "Data Entry"
 msgstr "数据录入"
 
 msgid "Examiners"
-msgstr "考官"
+msgstr "检查员"
 
 msgid "Imaging"
 msgstr "影像学"
