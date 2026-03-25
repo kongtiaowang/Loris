@@ -47,7 +47,7 @@ msgid "File Type"
 msgstr "文件类型"
 
 msgid "CandID"
-msgstr "坦率"
+msgstr "受试者ID"
 
 msgid "SessionID"
 msgstr "会话ID"
@@ -90,7 +90,7 @@ msgid "visit"
 msgstr "访问"
 
 msgid "for"
-msgstr "为了"
+msgstr "为"
 
 msgid "the file name should be prefixed by"
 msgstr "文件名应以前缀"
@@ -111,7 +111,7 @@ msgid "Note"
 msgstr "笔记"
 
 msgid "Date of Administration"
-msgstr "给药日期"
+msgstr "施测日期"
 
 msgid "Document's Language"
 msgstr "文档的语言"
@@ -134,12 +134,8 @@ msgstr "文件名无效！"
 msgid "File name should begin with:"
 msgstr "文件名应以以下内容开头："
 
-msgid ""
-"A file with this name already exists!\n"
-" Would you like to override existing file?"
-msgstr ""
-"同名的文件已存在！ \n"
-" 您想覆盖现有文件吗？"
+msgid "A file with this name already exists!\n Would you like to override existing file?"
+msgstr "同名的文件已存在！ \n 您想覆盖现有文件吗？"
 
 msgid "Cancelled"
 msgstr "取消"
