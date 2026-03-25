@@ -32,7 +32,7 @@ msgid "Pending account approvals"
 msgstr "待批准账户"
 
 msgid "This user has no site affiliations"
-msgstr "该用户没有网站隶属关系"
+msgstr "该用户没有站点隶属关系"
 
 msgid "This user has no project affiliations"
 msgstr "该用户没有项目隶属关系"
@@ -155,9 +155,7 @@ msgstr "用户名已存在"
 msgid "The user name must not exceed 255 characters"
 msgstr "用户名不得超过 255 个字符"
 
-msgid ""
-"You cannot have the user name match an email address that contains a "
-"whitespace character"
+msgid "You cannot have the user name match an email address that contains a whitespace character"
 msgstr "您不能让用户名与包含空格字符的电子邮件地址匹配"
 
 msgid "Whitespace characters are not allowed in user names"
@@ -187,14 +185,10 @@ msgstr "请注明检查者是否是放射科医生"
 msgid "Please set pending approval Yes or No"
 msgstr "请设置待批准是或否"
 
-msgid ""
-"Please select at least one examiner site or clear the 'Examiner status' "
-"fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgid "Please select at least one examiner site or clear the 'Examiner status' fields below (i.e. 'Radiologist' and 'Pending Approval')."
 msgstr "请至少选择一个检查员站点或清除下面的“检查员状态”字段（即“放射科医生”和“待批准”）。"
 
-msgid ""
-"Please notice that the \"Active from\" date should be lesser or equal to the"
-" \"Active to\" date."
+msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
 msgstr "请注意，“生效日期”应小于或等于“生效日期”。"
 
 msgid "Your password cannot be your email."
