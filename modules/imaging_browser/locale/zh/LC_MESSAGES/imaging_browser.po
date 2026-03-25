@@ -178,7 +178,7 @@ msgid "Feedback MRI Popup"
 msgstr "反馈 MRI 弹出窗口"
 
 msgid "Subject"
-msgstr "主题"
+msgstr "受试者"
 
 msgid "Download DICOM"
 msgstr "下载DICOM"

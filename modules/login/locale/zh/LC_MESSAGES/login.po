@@ -119,8 +119,8 @@ msgstr[0] "扫描序列/影像"
 
 msgid "Site"
 msgid_plural "Sites"
-msgstr[0] "中心/站点"
+msgstr[0] "中心"
 
 msgid "Visit"
 msgid_plural "Visits"
-msgstr[0] "随访/访视"
+msgstr[0] "访视"

@@ -27,25 +27,25 @@ msgid "DEV"
 msgstr "DEV"
 
 msgid "Affiliations"
-msgstr "隶属关系"
+msgstr "所属关系"
 
 msgid "Site Affiliation"
-msgstr "网站隶属关系"
+msgstr "所属中心"
 
 msgid "Site Affiliations"
-msgstr "网站隶属关系"
+msgstr "所属中心"
 
 msgid "Project Affiliation"
-msgstr "项目隶属关系"
+msgstr "所属项目"
 
 msgid "Project Affiliations"
-msgstr "项目隶属关系"
+msgstr "所属项目"
 
 msgid "Log Out"
 msgstr "退出"
 
 msgid "My Preferences"
-msgstr "我的偏好"
+msgstr "个人设置"
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -94,7 +94,7 @@ msgstr "影像学"
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
 msgid_plural "Candidates"
-msgstr[0] "受试者/参与者"
+msgstr[0] "受试者"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -120,10 +120,10 @@ msgstr "时间点 %s 详细信息"
 
 # Common select option labels
 msgid "Yes"
-msgstr "是的"
+msgstr "是"
 
 msgid "No"
-msgstr "不"
+msgstr "否"
 
 msgid "Browse"
 msgstr "浏览"
@@ -135,10 +135,10 @@ msgid "N/A"
 msgstr "不适用"
 
 msgid "Back"
-msgstr "后退"
+msgstr "返回"
 
 msgid "Create"
-msgstr "创造"
+msgstr "创建"
 
 # Filters
 msgid "Selection Filter"
@@ -172,10 +172,10 @@ msgid "Fail"
 msgstr "失败"
 
 msgid "True"
-msgstr "真的"
+msgstr "是"
 
 msgid "False"
-msgstr "错误的"
+msgstr "否"
 
 msgid "Selected"
 msgstr "已选择"
@@ -204,14 +204,14 @@ msgid "DCCID"
 msgstr "DCCID"
 
 msgid "Visit Label"
-msgstr "访问标签"
+msgstr "访视标签"
 
 msgid "Email"
-msgstr "电子邮件"
+msgstr "邮箱"
 
 msgid "Site"
 msgid_plural "Sites"
-msgstr[0] "中心/站点"
+msgstr[0] "中心"
 
 msgid "Module"
 msgstr "模块"
@@ -232,7 +232,7 @@ msgstr[0] "队列"
 
 msgid "Session"
 msgid_plural "Sessions"
-msgstr[0] "会议"
+msgstr[0] "会话"
 
 msgid "Date of registration"
 msgstr "注册日期"
@@ -241,10 +241,10 @@ msgid "Date Of Visit"
 msgstr "访问日期"
 
 msgid "Participant Status"
-msgstr "参与者状态"
+msgstr "受试者状态"
 
 msgid "DoB"
-msgstr "国防部"
+msgstr "出生日期"
 
 msgid "Sex"
 msgstr "性别"
@@ -253,7 +253,7 @@ msgid "Feedback"
 msgstr "反馈"
 
 msgid "Scans"
-msgstr "扫描序列/影像"
+msgstr "扫描数据"
 
 msgid "Date"
 msgstr "日期"
@@ -283,10 +283,10 @@ msgid "An error occured while loading the page."
 msgstr "加载页面时发生错误。"
 
 msgid "Active"
-msgstr "积极的"
+msgstr "启用"
 
 msgid "Pending"
-msgstr "待办的"
+msgstr "待处理"
 
 msgid "Entity Type"
 msgstr "实体类型"
@@ -304,7 +304,7 @@ msgid "No."
 msgstr "不。"
 
 msgid "Ethnicity"
-msgstr "种族"
+msgstr "种族/民族"
 
 msgid "Are You Sure?"
 msgstr "你确定吗？"
@@ -325,13 +325,13 @@ msgid "Proceed"
 msgstr "继续"
 
 msgid "Previous"
-msgstr "以前的"
+msgstr "上一步"
 
 msgid "Next"
-msgstr "下一个"
+msgstr "下一步"
 
 msgid "Save"
-msgstr "节省"
+msgstr "保存"
 
 msgid "Saving"
 msgstr "保存"
@@ -464,16 +464,16 @@ msgid "Not Started"
 msgstr "未开始"
 
 msgid "Screening"
-msgstr "筛选"
+msgstr "筛查"
 
 msgid "Visit"
-msgstr "随访/访视"
+msgstr "访视"
 
 msgid "Approval"
 msgstr "赞同"
 
 msgid "Subject"
-msgstr "主题"
+msgstr "受试者"
 
 msgid "Recycling Bin"
 msgstr "回收箱"
@@ -482,10 +482,10 @@ msgid "Failure"
 msgstr "失败"
 
 msgid "Withdrawal"
-msgstr "提款"
+msgstr "退出研究"
 
 msgid "Withdrawn"
-msgstr "撤回"
+msgstr "已退出"
 
 msgid "In Progress"
 msgstr "进行中"
@@ -497,23 +497,23 @@ msgid "Success"
 msgstr "成功"
 
 msgid "Complete"
-msgstr "完全的"
+msgstr "已完成"
 
 msgid "Instrument"
 msgid_plural "Instruments"
 msgstr[0] "量表/评估工具"
 
 msgid "None"
-msgstr "没有任何"
+msgstr "无"
 
 msgid "Partial"
-msgstr "部分的"
+msgstr "部分"
 
 msgid "All"
 msgstr "全部"
 
 msgid "Data Entry"
-msgstr "数据输入"
+msgstr "数据录入"
 
 msgid "Administration"
 msgstr "行政"
@@ -525,7 +525,7 @@ msgid "Double Data Entry Status"
 msgstr "双重数据输入状态"
 
 msgid "Double Data Entry"
-msgstr "双重数据输入"
+msgstr "双人录入"
 
 # Age related terms
 msgid "Age"
@@ -542,10 +542,10 @@ msgid "Loading..."
 msgstr "加载中..."
 
 msgid "Permission denied"
-msgstr "没有权限"
+msgstr "无权限"
 
 msgid "Unauthorized"
-msgstr "未经授权"
+msgstr "未授权"
 
 msgid "File to upload"
 msgstr "要上传的文件"
@@ -567,4 +567,4 @@ msgstr "数据集"
 
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
-msgstr "无选项"
+msgstr "无可选项"

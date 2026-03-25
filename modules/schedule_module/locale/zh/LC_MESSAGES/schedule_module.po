@@ -45,7 +45,7 @@ msgid "Data Entry Status"
 msgstr "数据输入状态"
 
 msgid "Complete"
-msgstr "完全的"
+msgstr "已完成"
 
 msgid "No Data Found"
 msgstr "没有找到数据"

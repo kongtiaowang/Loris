@@ -87,4 +87,4 @@ msgid "Hardcopy"
 msgstr "硬拷贝"
 
 msgid "Complete"
-msgstr "完全的"
+msgstr "已完成"
