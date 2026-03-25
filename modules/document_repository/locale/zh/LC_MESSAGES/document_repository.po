@@ -23,7 +23,7 @@ msgid "Document Repository"
 msgstr "文档库"
 
 msgid "Document Repository Notifications"
-msgstr "文档存储库通知"
+msgstr "文档存通知"
 
 msgid "Upload files"
 msgstr "上传文件"
@@ -83,7 +83,7 @@ msgid "Category Name"
 msgstr "类别名称"
 
 msgid "Parent"
-msgstr "家长"
+msgstr "父目录"
 
 msgid "Category added successfully!"
 msgstr "类别添加成功！"
@@ -116,13 +116,13 @@ msgid "New Name for Category"
 msgstr "类别的新名称"
 
 msgid "New Parent:"
-msgstr "新家长："
+msgstr "新父目录："
 
 msgid "Cannot be equal to itself"
 msgstr "不能等于自身"
 
 msgid "New parent cannot be equal to itself"
-msgstr "新的父级不能等于它自己"
+msgstr "新的父目录不能等于它自己"
 
 msgid "Edit error!"
 msgstr "编辑错误！"
