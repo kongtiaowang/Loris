@@ -20,10 +20,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Instrument List"
-msgstr "仪器清单"
+msgstr "量表清单"
 
 msgid "Visit to Site"
-msgstr "参观现场"
+msgstr "访问站点"
 
 msgid "Within Optimal"
 msgstr "最优范围内"
@@ -32,10 +32,10 @@ msgid "Within Permitted"
 msgstr "在允许范围内"
 
 msgid "Behavioural Battery of Instruments"
-msgstr "行为仪器组"
+msgstr "行为量表组"
 
 msgid "The battery has no registered instruments"
-msgstr "电池没有注册仪器"
+msgstr "电池没有注册量表"
 
 msgid "View Imaging data"
 msgstr "查看成像数据"
