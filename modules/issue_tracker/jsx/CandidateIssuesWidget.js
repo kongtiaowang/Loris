@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import {withTranslation} from 'react-i18next';
-import {useTranslation} from 'react-i18next';
+import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/issue_tracker.json';
 
 /**
  * CandidateIssuesWidget represents a list of open issues to be displayed
@@ -16,20 +17,21 @@ import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
  * @return {object}
  */
 function CandidateIssuesWidget(props) {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const [reload, setReload] = useState(0);
-  useEffect( () => {
+  useEffect(() => {
     i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
     i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
     i18n.addResourceBundle('fr', 'issue_tracker', frStrings);
-    setReload(reload+1);
+    i18n.addResourceBundle('zh', 'issue_tracker', zhStrings);
+    setReload(reload + 1);
   }, [t]);
-  const issues = props.Issues.map(function(issue) {
+  const issues = props.Issues.map(function (issue) {
     let comments;
-    if (issue.comments && issue.comments != '0' ) {
+    if (issue.comments && issue.comments != '0') {
       comments = t(
         '({{count}} comment)',
-        {ns: 'issue_tracker', count: issue.comments}
+        { ns: 'issue_tracker', count: issue.comments }
       );
     }
     return (<li key={issue.ID}>

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
@@ -14,15 +14,17 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
-import {withTranslation} from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
 import frStrings from '../locale/fr/LC_MESSAGES/media.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/media.json';
 import esStrings from '../locale/es/LC_MESSAGES/media.json';
 i18n.addResourceBundle('hi', 'media', hiStrings);
 i18n.addResourceBundle('ja', 'media', jaStrings);
 i18n.addResourceBundle('fr', 'media', frStrings);
 i18n.addResourceBundle('es', 'media', esStrings);
+i18n.addResourceBundle('zh', 'media', zhStrings);
 
 /**
  * Media Upload Form
@@ -70,7 +72,7 @@ class MediaUploadForm extends Component {
         console.error(response.status + ': ' + response.statusText);
         this.setState({
           error: this.props.t('An error occurred when loading the form!',
-            {ns: 'media'}),
+            { ns: 'media' }),
         });
         return;
       }
@@ -85,7 +87,7 @@ class MediaUploadForm extends Component {
       console.error(error);
       this.setState({
         error: this.props.t('An error occurred when loading the form!',
-          {ns: 'media'}),
+          { ns: 'media' }),
       });
     });
   }
@@ -96,7 +98,7 @@ class MediaUploadForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {t} = this.props;
+    const { t } = this.props;
 
     // Data loading error
     if (this.state.error !== undefined) {
@@ -112,22 +114,22 @@ class MediaUploadForm extends Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <Loader/>
+        <Loader />
       );
     }
 
     let helpText = (
       <span>
-        {t('File name must begin with', {ns: 'media'})}
-        <b>[{t('PSCID', {ns: 'loris'})}]_[{t('Visit Label', {ns: 'loris'})}]_[
-          {t('Instrument', {ns: 'loris', count: 1})}]</b><br/>
-        {t('For example, for candidate', {ns: 'media'})}
-        <i>ABC123</i>, {t('visit', {ns: 'media'})} <i>V1</i>
-        {t('for', {ns: 'media'})}
+        {t('File name must begin with', { ns: 'media' })}
+        <b>[{t('PSCID', { ns: 'loris' })}]_[{t('Visit Label', { ns: 'loris' })}]_[
+          {t('Instrument', { ns: 'loris', count: 1 })}]</b><br />
+        {t('For example, for candidate', { ns: 'media' })}
+        <i>ABC123</i>, {t('visit', { ns: 'media' })} <i>V1</i>
+        {t('for', { ns: 'media' })}
         <i>Body Mass Index</i>
-        {t('the file name should be prefixed by', {ns: 'media'})}:
-        <b> ABC123_V1_bmi</b><br/>
-        {t('File cannot exceed', {ns: 'media'})} {this.props.maxUploadSize}
+        {t('the file name should be prefixed by', { ns: 'media' })}:
+        <b> ABC123_V1_bmi</b><br />
+        {t('File cannot exceed', { ns: 'media' })} {this.props.maxUploadSize}
       </span>
     );
 
@@ -135,15 +137,15 @@ class MediaUploadForm extends Component {
       this.state.Data.sessionData[this.state.formData.pscid].visits :
       {};
     const instruments = this.state.formData.pscid
-                        && this.state.formData.visitLabel ?
+      && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
       {};
     const visitErrMsg = visits && visits.length === 0 ?
-      t('No visits available for this candidate', {ns: 'media'}) :
+      t('No visits available for this candidate', { ns: 'media' }) :
       '';
     const instErrMsg = instruments && instruments.length === 0 ?
-      t('No instruments available for this visit', {ns: 'media'}) :
+      t('No instruments available for this visit', { ns: 'media' }) :
       '';
     return (
       <div className='row'>
@@ -155,15 +157,15 @@ class MediaUploadForm extends Component {
             ref='form'
           >
             <HeaderElement
-              text={t('Upload a media file', {ns: 'media'})}
+              text={t('Upload a media file', { ns: 'media' })}
             />
             <StaticElement
-              label={t('Note', {ns: 'media'})}
+              label={t('Note', { ns: 'media' })}
               text={helpText}
             />
             <SelectElement
               name='pscid'
-              label={t('PSCID', {ns: 'loris'})}
+              label={t('PSCID', { ns: 'loris' })}
               options={this.state.Data.candidates}
               onUserInput={this.setFormData}
               ref='pscid'
@@ -172,7 +174,7 @@ class MediaUploadForm extends Component {
             />
             <SelectElement
               name='visitLabel'
-              label={t('Visit Label', {ns: 'loris'})}
+              label={t('Visit Label', { ns: 'loris' })}
               options={visits}
               placeholder={visitErrMsg}
               onUserInput={this.setFormData}
@@ -183,7 +185,7 @@ class MediaUploadForm extends Component {
             />
             <SelectElement
               name='instrument'
-              label={t('Instrument', {ns: 'loris', count: 1})}
+              label={t('Instrument', { ns: 'loris', count: 1 })}
               options={instruments}
               placeholder={instErrMsg}
               onUserInput={this.setFormData}
@@ -195,7 +197,7 @@ class MediaUploadForm extends Component {
             />
             <DateElement
               name='dateTaken'
-              label={t('Date of Administration', {ns: 'media'})}
+              label={t('Date of Administration', { ns: 'media' })}
               minYear={this.state.Data.startYear}
               maxYear={this.state.Data.endYear}
               onUserInput={this.setFormData}
@@ -204,14 +206,14 @@ class MediaUploadForm extends Component {
             />
             <TextareaElement
               name='comments'
-              label={t('Comments', {ns: 'media'})}
+              label={t('Comments', { ns: 'media' })}
               onUserInput={this.setFormData}
               ref='comments'
               value={this.state.formData.comments}
             />
             <SelectElement
               name='language'
-              label={t('Document\'s Language', {ns: 'media'})}
+              label={t('Document\'s Language', { ns: 'media' })}
               options={this.state.Data.language}
               onUserInput={this.setFormData}
               ref='language'
@@ -223,14 +225,14 @@ class MediaUploadForm extends Component {
               id='mediaUploadEl'
               onUserInput={this.setFormData}
               ref='file'
-              label={t('File to upload', {ns: 'loris'})}
+              label={t('File to upload', { ns: 'loris' })}
               required={true}
               value={this.state.formData.file}
             />
-            <ButtonElement label={t('Upload File', {ns: 'media'})}/>
+            <ButtonElement label={t('Upload File', { ns: 'media' })} />
             <div className='row'>
               <div className='col-sm-9 col-sm-offset-3'>
-                <ProgressBar value={this.state.uploadProgress}/>
+                <ProgressBar value={this.state.uploadProgress} />
               </div>
             </div>
           </FormElement>
@@ -291,7 +293,7 @@ class MediaUploadForm extends Component {
       swal.fire(
         'Invalid file name!',
         'Your file\'s base name should be: <code>'
-        + requiredFileName +'</code>'
+        + requiredFileName + '</code>'
         + '<br>followed by the file extension.',
         'error'
       );
@@ -304,12 +306,12 @@ class MediaUploadForm extends Component {
       swal.fire({
         title: 'Are you sure?',
         text: 'A file with this name already exists!' + '\n'
-              + 'Would you like to overwrite the existing file?',
+          + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'loris'}),
-        cancelButtonText: this.props.t('No, cancel it!', {ns: 'loris'}),
-      }).then(function(isConfirm) {
+        confirmButtonText: this.props.t('Yes, I am sure!', { ns: 'loris' }),
+        cancelButtonText: this.props.t('No, cancel it!', { ns: 'loris' }),
+      }).then(function (isConfirm) {
         if (isConfirm) {
           this.uploadFile();
         } else {
@@ -338,7 +340,7 @@ class MediaUploadForm extends Component {
     xhr.upload.addEventListener('progress', (evt) => {
       if (evt.lengthComputable) {
         let percent = Math.round((evt.loaded / evt.total) * 100);
-        this.setState({uploadProgress: percent});
+        this.setState({ uploadProgress: percent });
       }
     }, false);
 
@@ -360,8 +362,8 @@ class MediaUploadForm extends Component {
           uploadProgress: -1,
         });
         swal.fire(
-          this.props.t('Success!', {ns: 'media'}),
-          this.props.t('Upload of media file completed.', {ns: 'media'}),
+          this.props.t('Success!', { ns: 'media' }),
+          this.props.t('Upload of media file completed.', { ns: 'media' }),
           'success'
         ).then((result) => {
           if (result.value) {
@@ -370,14 +372,14 @@ class MediaUploadForm extends Component {
         });
       } else {
         console.error(xhr.status + ': ' + xhr.statusText);
-        let msg = this.props.t('Upload error!', {ns: 'media'});
+        let msg = this.props.t('Upload error!', { ns: 'media' });
         if (xhr.response) {
           if (xhr.statusText) {
             msg = JSON.parse(xhr.response).message;
           }
         }
         if (xhr.status === 413) {
-          msg = this.props.t('File too large!', {ns: 'media'});
+          msg = this.props.t('File too large!', { ns: 'media' });
         }
 
         this.setState({
@@ -392,7 +394,7 @@ class MediaUploadForm extends Component {
       console.error(xhr.status + ': ' + xhr.statusText);
       let msg = xhr.response && JSON.parse(xhr.response).message
         ? JSON.parse(xhr.response).message
-        : this.props.t('Upload error!', {ns: 'media'});
+        : this.props.t('Upload error!', { ns: 'media' });
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -427,7 +429,7 @@ class MediaUploadForm extends Component {
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
   isValidForm(formRefs, formData) {
-    const {t} = this.props;
+    const { t } = this.props;
     let isValidForm = true;
 
     let requiredFields = {
@@ -436,12 +438,12 @@ class MediaUploadForm extends Component {
       file: null,
     };
 
-    Object.keys(requiredFields).map(function(field) {
+    Object.keys(requiredFields).map(function (field) {
       if (formData[field]) {
         requiredFields[field] = formData[field];
       } else if (formRefs[field]) {
         formRefs[field].props.errorMessage = t
-          ? t('This field is required.', {ns: 'media'})
+          ? t('This field is required.', { ns: 'media' })
           : 'This field is required.';
         isValidForm = false;
       }

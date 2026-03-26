@@ -71,6 +71,7 @@ GenomicBrowser.propTypes = {
  */
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'genomic_browser', {});
+  i18n.addResourceBundle('zh', 'genomic_browser', zhStrings);
   const GenomicB = withTranslation(
     ['genomic_browser', 'loris']
   )(GenomicBrowser);

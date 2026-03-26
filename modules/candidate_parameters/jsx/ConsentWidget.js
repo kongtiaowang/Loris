@@ -14,10 +14,10 @@ function ConsentWidget(props) {
   const {t, i18n} = useTranslation();
   const [reload, setReload] = useState(0);
   useEffect( () => {
-    i18n.addResourceBundle(
+    i18n.addResourceBundle(;
       'ja',
       'candidate_parameters',
-      require('../locale/ja/LC_MESSAGES/candidate_parameters.json')
+      require('../locale/ja/LC_MESSAGES/candidate_parameters.json');
     );
     // Change a state to force a reload now that the terms have been added.
     setReload(reload+1);

@@ -148,6 +148,7 @@ SurveyAccountsIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'survey_accounts', {});
+  i18n.addResourceBundle('zh', 'survey_accounts', zhStrings);
   const Index = withTranslation(
     ['survey_accounts', 'loris']
   )(SurveyAccountsIndex);
