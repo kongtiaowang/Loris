@@ -18,7 +18,7 @@ import {
 import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/create_timepoint.json';
 import frStrings from '../locale/fr/LC_MESSAGES/create_timepoint.json';
-
+import zhStrings from '../locale/zh/LC_MESSAGES/create_timepoint.json';
 /**
  * Create Timepoint.
  *
@@ -487,6 +487,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'create_timepoint', esStrings);
   i18n.addResourceBundle('ja', 'create_timepoint', jaStrings);
   i18n.addResourceBundle('fr', 'create_timepoint', frStrings);
+  i18n.addResourceBundle('zh', 'create_timepoint', zhStrings);
 
   const TranslatedCreateTimepoint = withTranslation(
     ['create_timepoint', 'loris']
