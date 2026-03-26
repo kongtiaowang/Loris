@@ -53,6 +53,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po \
 	modules/candidate_profile/locale/fr/LC_MESSAGES/candidate_profile.po \
 	modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po \
+	modules/candidate_profile/locale/zh/LC_MESSAGES/candidate_profile.po \
 	modules/behavioural_qc/locale/fr/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po \
