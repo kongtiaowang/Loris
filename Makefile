@@ -115,6 +115,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.po \
 	modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po \
 	modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po \
+	modules/api_docs/locale/zh/LC_MESSAGES/api_docs.po \
 	modules/publication/locale/fr/LC_MESSAGES/publication.po \
 	modules/publication/locale/ja/LC_MESSAGES/publication.po \
 	modules/publication/locale/hi/LC_MESSAGES/publication.po \
