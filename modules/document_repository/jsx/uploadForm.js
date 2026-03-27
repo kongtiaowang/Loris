@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import swal from 'sweetalert2';
@@ -12,7 +12,7 @@ import {
   FileElement,
   ButtonElement,
 } from 'jsx/Form';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
@@ -57,7 +57,7 @@ class DocUploadForm extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -78,11 +78,11 @@ class DocUploadForm extends Component {
    * @return {Promise}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data: data, isLoaded: true }))
+      .then((data) => this.setState({data: data, isLoaded: true}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -94,10 +94,10 @@ class DocUploadForm extends Component {
    */
   render() {
     // Data loading error
-    const { t } = this.props;
+    const {t} = this.props;
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        { ns: 'loris' })}</h3>;
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -112,10 +112,10 @@ class DocUploadForm extends Component {
             onSubmit={this.uploadFiles}
             method="POST"
           >
-            <h3>{t('Upload files', { ns: 'document_repository' })}</h3><br />
+            <h3>{t('Upload files', {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="category"
-              label={t('Category', { ns: 'document_repository' })}
+              label={t('Category', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               required={true}
@@ -123,8 +123,8 @@ class DocUploadForm extends Component {
             />
             <SearchableDropdown
               name="forSite"
-              label={t('Site', { ns: 'loris', count: 1 })}
-              placeHolder={t('Search for site', { ns: 'document_repository' })}
+              label={t('Site', {ns: 'loris', count: 1})}
+              placeHolder={t('Search for site', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
@@ -133,32 +133,32 @@ class DocUploadForm extends Component {
             />
             <SelectElement
               name="instrument"
-              label={t('Instrument', { ns: 'loris', count: 1 })}
+              label={t('Instrument', {ns: 'loris', count: 1})}
               options={this.state.data.fieldOptions.instruments}
               onUserInput={this.setFormData}
               value={this.state.formData.instrument}
             />
             <TextboxElement
               name="pscid"
-              label={t('PSCID', { ns: 'loris' })}
+              label={t('PSCID', {ns: 'loris'})}
               onUserInput={this.setFormData}
               value={this.state.formData.pscid}
             />
             <TextboxElement
               name="visitLabel"
-              label={t('Visit Label', { ns: 'loris' })}
+              label={t('Visit Label', {ns: 'loris'})}
               onUserInput={this.setFormData}
               value={this.state.formData.visitLabel}
             />
             <TextboxElement
               name="version"
-              label={t('Version', { ns: 'document_repository' })}
+              label={t('Version', {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               value={this.state.formData.version}
             />
             <TextareaElement
               name="comments"
-              label={t('Comments', { ns: 'document_repository' })}
+              label={t('Comments', {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               value={this.state.formData.comments}
             />
@@ -167,7 +167,7 @@ class DocUploadForm extends Component {
                 (<SelectElement
                   name="hiddenFile"
                   label={t('Restrict access to the file?',
-                    { ns: 'document_repository' })}
+                    {ns: 'document_repository'})}
                   options={this.state.data.fieldOptions.hiddenFile}
                   sortByValue={false}
                   onUserInput={this.setFormData}
@@ -179,15 +179,15 @@ class DocUploadForm extends Component {
               name="files"
               id="docUploadEl"
               onUserInput={this.setFormData}
-              label={t('File(s) to upload', { ns: 'document_repository' })}
+              label={t('File(s) to upload', {ns: 'document_repository'})}
               required={true}
               value={this.state.formData.files}
               allowMultiple={true}
             />
             <ButtonElement
-              label={t('Upload File(s)', { ns: 'document_repository' })}
+              label={t('Upload File(s)', {ns: 'document_repository'})}
               disabled={this.state.uploadInProgress}
-              disabledLabel={t('Uploading...', { ns: 'document_repository' })}
+              disabledLabel={t('Uploading...', {ns: 'document_repository'})}
             />
           </FormElement>
         </div>
@@ -207,7 +207,7 @@ class DocUploadForm extends Component {
   uploadFiles() {
     // Set form data and upload the media file
     try {
-      this.setState({ uploadInProgress: true });
+      this.setState({uploadInProgress: true});
       let formData = this.state.formData;
       let formObject = new FormData();
       for (let key in formData) {
@@ -235,12 +235,12 @@ class DocUploadForm extends Component {
               if (data.error_count === 0) {
                 swal.fire(
                   this.props.t('Upload Successful!',
-                    { ns: 'document_repository' }),
+                    {ns: 'document_repository'}),
                   '',
                   'success'
                 ).then((result) => {
                   if (result.value) {
-                    this.setState({ formData: {} });
+                    this.setState({formData: {}});
                     this.props.refreshPage();
                   }
                 });
@@ -248,7 +248,7 @@ class DocUploadForm extends Component {
                 console.error(resp);
                 swal.fire(
                   this.props.t('Upload Incomplete',
-                    { ns: 'document_repository' }),
+                    {ns: 'document_repository'}),
                   data.message,
                   'warning'
                 );
@@ -257,34 +257,34 @@ class DocUploadForm extends Component {
               console.error(error);
               swal.fire(
                 this.props.t('Error reading response',
-                  { ns: 'document_repository' }),
+                  {ns: 'document_repository'}),
                 this.props.t(
                   'Please report the issue or contact your administrator',
-                  { ns: 'document_repository' }),
+                  {ns: 'document_repository'}),
                 'error'
               );
             });
           } else {
             if (resp.status == 413) {
               swal.fire(
-                this.props.t('File too large', { ns: 'document_repository' }),
+                this.props.t('File too large', {ns: 'document_repository'}),
                 this.props.t('Could not upload file',
-                  { ns: 'document_repository' }),
+                  {ns: 'document_repository'}),
                 'error'
               );
             }
             if (resp.status == 403) {
               swal.fire(
-                this.props.t('Permission denied', { ns: 'loris' }),
+                this.props.t('Permission denied', {ns: 'loris'}),
                 this.props.t('Could not upload file',
-                  { ns: 'document_repository' }),
+                  {ns: 'document_repository'}),
                 'error'
               );
             }
             if (resp.status == 400) {
               swal.fire(
                 this.props.t('Something went wrong',
-                  { ns: 'document_repository' }),
+                  {ns: 'document_repository'}),
                 JSON.parse(resp.response).message,
                 'error'
               );
@@ -294,16 +294,16 @@ class DocUploadForm extends Component {
           console.error(error);
           swal.fire(
             this.props.t('Something went wrong',
-              { ns: 'document_repository' }),
+              {ns: 'document_repository'}),
             this.props.t(
               'Please report the issue or contact your administrator',
-              { ns: 'document_repository' }),
+              {ns: 'document_repository'}),
             'error'
           );
-        }).finally(() => this.setState({ uploadInProgress: false }));
+        }).finally(() => this.setState({uploadInProgress: false}));
     } catch (error) {
       console.error(error);
-      this.setState({ uploadInProgress: false });
+      this.setState({uploadInProgress: false});
     }
   }
 
@@ -317,7 +317,7 @@ class DocUploadForm extends Component {
     let formData = this.state.formData;
     formData[formElement] = value;
 
-    this.setState({ formData: formData });
+    this.setState({formData: formData});
   }
 }
 

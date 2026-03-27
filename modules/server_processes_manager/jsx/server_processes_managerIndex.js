@@ -11,8 +11,8 @@ import FilterableDataTable from 'FilterableDataTable';
 import jaStrings
   from '../locale/ja/LC_MESSAGES/server_processes_manager.json';
 import hiStrings
-  from '../locale/hi/LC_MESSAGES/server_processes_manager.json'
-import zhStrings from '../locale/zh/LC_MESSAGES/server_processes_manager.json';;
+  from '../locale/hi/LC_MESSAGES/server_processes_manager.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/server_processes_manager.json';
 
 /**
  * ServerProcessesManagerIndex is the main entry point of the

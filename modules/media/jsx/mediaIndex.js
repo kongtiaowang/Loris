@@ -16,7 +16,7 @@ import MediaEditForm from './editForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
 import frStrings from '../locale/fr/LC_MESSAGES/media.json';
-import esStrings from '../locale/es/LC_MESSAGES/media.json'
+import esStrings from '../locale/es/LC_MESSAGES/media.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/media.json';
 
 /**

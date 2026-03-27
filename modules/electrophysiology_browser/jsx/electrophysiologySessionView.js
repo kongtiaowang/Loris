@@ -7,16 +7,16 @@
  * @version 0.0.1
  */
 
-import { createRoot } from 'react-dom/client';
-import React, { Component } from 'react';
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import DataTable from 'jsx/DataTable';
 import Panel from 'jsx/Panel';
-import { FilePanel } from './components/electrophysiology_session_panels';
-import { SummaryPanel } from './components/electrophysiology_session_summary';
-import { DownloadPanel } from './components/DownloadPanel';
+import {FilePanel} from './components/electrophysiology_session_panels';
+import {SummaryPanel} from './components/electrophysiology_session_summary';
+import {DownloadPanel} from './components/DownloadPanel';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
 let EEGLabSeriesProvider;
@@ -194,7 +194,7 @@ class ElectrophysiologySessionView extends Component {
     const outputTypeArg = '?outputType=' + this.state.url.params['outputType'];
     return fetch(
       dataURL + sessionID + outputTypeArg,
-      { credentials: 'same-origin' }
+      {credentials: 'same-origin'}
     ).then((resp) => {
       if (!resp.ok) {
         throw Error(resp.statusText);
@@ -254,7 +254,7 @@ class ElectrophysiologySessionView extends Component {
       }));
 
       this.setState({
-        setup: { data },
+        setup: {data},
         isLoaded: true,
         database: database,
         patient: {
@@ -276,7 +276,7 @@ class ElectrophysiologySessionView extends Component {
       }
     })
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -308,9 +308,9 @@ class ElectrophysiologySessionView extends Component {
 
     fetch(
       dataURL, {
-      method: 'POST',
-      body: formData,
-    }).then((resp) => {
+        method: 'POST',
+        body: formData,
+      }).then((resp) => {
       if (!resp.ok) {
         throw Error(resp.statusText);
       }
@@ -318,10 +318,10 @@ class ElectrophysiologySessionView extends Component {
       resp.json().then((splitData) => {
         const database = JSON.parse(JSON.stringify(this.state.database));
         database[fileIndex].file.splitData = splitData;
-        this.setState({ database });
+        this.setState({database});
       });
     }).catch((error) => {
-      this.setState({ error: true });
+      this.setState({error: true});
       console.error(error);
     });
   }
@@ -332,11 +332,11 @@ class ElectrophysiologySessionView extends Component {
    * @return {JSX|void} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return (
         <button className='btn-info has-spinner'>
-          {t('Loading...', { ns: 'loris' })}
+          {t('Loading...', {ns: 'loris'})}
           <span
             className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
@@ -425,7 +425,7 @@ class ElectrophysiologySessionView extends Component {
                     <Panel
                       id='channel-viewer'
                       title={
-                        t('Signal Viewer', { ns: 'electrophysiology_browser' }) + (
+                        t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
                           file.splitData
                             ? ` [${t('split {{splitNum}}', {
                               ns: 'electrophysiology_browser',
@@ -448,7 +448,7 @@ class ElectrophysiologySessionView extends Component {
                           >
                             {t(
                               'Viewing signal split file:',
-                              { ns: 'electrophysiology_browser' }
+                              {ns: 'electrophysiology_browser'}
                             )}
                           </span>
                           <a
@@ -521,17 +521,17 @@ class ElectrophysiologySessionView extends Component {
         <div id='lorisworkspace'>
           <DataTable
             fields={[
-              { label: t('PSCID', { ns: 'loris' }), show: true },
-              { label: t('DCCID', { ns: 'loris' }), show: true },
-              { label: t('Visit Label', { ns: 'loris' }), show: true },
-              { label: t('Site', { ns: 'loris', count: 1 }), show: true },
-              { label: t('DoB', { ns: 'loris' }), show: true },
-              { label: t('Sex', { ns: 'loris' }), show: true },
+              {label: t('PSCID', {ns: 'loris'}), show: true},
+              {label: t('DCCID', {ns: 'loris'}), show: true},
+              {label: t('Visit Label', {ns: 'loris'}), show: true},
+              {label: t('Site', {ns: 'loris', count: 1}), show: true},
+              {label: t('DoB', {ns: 'loris'}), show: true},
+              {label: t('Sex', {ns: 'loris'}), show: true},
               {
-                label: t('Output Type', { ns: 'electrophysiology_browser' }),
+                label: t('Output Type', {ns: 'electrophysiology_browser'}),
                 show: true,
               },
-              { label: t('Cohort', { ns: 'loris', count: 1 }), show: true },
+              {label: t('Cohort', {ns: 'loris', count: 1}), show: true},
             ]}
             data={[
               [
@@ -545,8 +545,8 @@ class ElectrophysiologySessionView extends Component {
                 this.state.patient.info.cohort,
               ],
             ]}
-            freezeColumn={t('PSCID', { ns: 'loris' })}
-            Hide={{ rowsPerPage: true, downloadCSV: true, defaultColumn: true }}
+            freezeColumn={t('PSCID', {ns: 'loris'})}
+            Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
           />
           {database}
         </div>
@@ -567,7 +567,7 @@ ElectrophysiologySessionView.defaultProps = {
 /**
  * Render EEGSession on page load.
  */
-window.onload = function () {
+window.onload = function() {
   i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
   i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);

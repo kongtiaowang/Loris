@@ -9,7 +9,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
-import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json'
+import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 /**

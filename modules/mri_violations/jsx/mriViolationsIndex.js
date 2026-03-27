@@ -9,7 +9,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/mri_violations.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/mri_violations.json';
 import frStrings from '../locale/fr/LC_MESSAGES/mri_violations.json';
-import esStrings from '../locale/es/LC_MESSAGES/mri_violations.json'
+import esStrings from '../locale/es/LC_MESSAGES/mri_violations.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/mri_violations.json';
 
 /**

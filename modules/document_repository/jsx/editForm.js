@@ -10,7 +10,7 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
@@ -55,7 +55,7 @@ class DocEditForm extends React.Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -64,7 +64,7 @@ class DocEditForm extends React.Component {
    * @return {Promise}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
         const formData = data.docData;
@@ -75,7 +75,7 @@ class DocEditForm extends React.Component {
         });
       })
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
       });
   }
 
@@ -85,11 +85,11 @@ class DocEditForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        { ns: 'loris' })}</h3>;
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -108,11 +108,11 @@ class DocEditForm extends React.Component {
           onSubmit={this.handleSubmit}
         >
           <h3>{t('Edit Document Repository File',
-            { ns: 'document_repository' })}</h3>
+            {ns: 'document_repository'})}</h3>
           <br />
           <SelectElement
             name="category"
-            label={t('Category', { ns: 'document_repository' })}
+            label={t('Category', {ns: 'document_repository'})}
             options={this.state.data.categories}
             onUserInput={this.setFormData}
             required={true}
@@ -121,7 +121,7 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="forSite"
-            label={t('Site', { ns: 'loris', count: 1 })}
+            label={t('Site', {ns: 'loris', count: 1})}
             options={this.state.data.sites}
             onUserInput={this.setFormData}
             required={true}
@@ -130,27 +130,27 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="instrument"
-            label={t('Instrument', { ns: 'loris', count: 1 })}
+            label={t('Instrument', {ns: 'loris', count: 1})}
             options={this.state.data.instruments}
             onUserInput={this.setFormData}
             value={this.state.docData.instrument}
           />
           <TextboxElement
             name="pscid"
-            label={t('PSCID', { ns: 'loris' })}
+            label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disable={true}
             value={this.state.docData.pscid}
           />
           <TextboxElement
             name="visitLabel"
-            label={t('Visit Label', { ns: 'loris' })}
+            label={t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFormData}
             value={this.state.docData.visitLabel}
           />
           <TextareaElement
             name="comments"
-            label={t('Comments', { ns: 'document_repository' })}
+            label={t('Comments', {ns: 'document_repository'})}
             onUserInput={this.setFormData}
             value={this.state.docData.comments}
           />
@@ -159,7 +159,7 @@ class DocEditForm extends React.Component {
             (<SelectElement
               name="hiddenFile"
               label={t('Restrict access to the file?',
-                { ns: 'document_repository' })}
+                {ns: 'document_repository'})}
               options={this.state.data.hiddenVideo}
               sortByValue={false}
               onUserInput={this.setFormData}
@@ -168,11 +168,11 @@ class DocEditForm extends React.Component {
           }
           <TextboxElement
             name="version"
-            label={t('Version', { ns: 'document_repository' })}
+            label={t('Version', {ns: 'document_repository'})}
             onUserInput={this.setFormData}
             value={this.state.docData.version}
           />
-          <ButtonElement label={t('Update File', { ns: 'document_repository' })} />
+          <ButtonElement label={t('Update File', {ns: 'document_repository'})} />
         </FormElement>
       </div>
     );

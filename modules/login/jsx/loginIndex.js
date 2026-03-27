@@ -19,7 +19,7 @@ import {PolicyButton} from 'jsx/PolicyButton';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/login.json';
-import frStrings from '../locale/fr/LC_MESSAGES/login.json'
+import frStrings from '../locale/fr/LC_MESSAGES/login.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/login.json';
 
 /**

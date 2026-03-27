@@ -12,7 +12,7 @@ import BehaviouralFeedback from './tabs_content/behaviouralFeedback';
 
 import frStrings from '../locale/fr/LC_MESSAGES/behavioural_qc.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/behavioural_qc.json';
-import jaStrings from '../locale/ja/LC_MESSAGES/behavioural_qc.json'
+import jaStrings from '../locale/ja/LC_MESSAGES/behavioural_qc.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/behavioural_qc.json';
 /**
  * Behavioural Quality Control.

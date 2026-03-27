@@ -5,7 +5,7 @@ import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
-import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json'
+import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/instrument_builder.json';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */

@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import React, { Component } from 'react';
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import swal from 'sweetalert2';
 import Modal from 'Modal';
@@ -17,8 +17,8 @@ import {
   DateElement,
   ButtonElement,
 } from 'jsx/Form';
-import { Acknowledgement } from './entities';
-import { Query } from 'jslib/http';
+import {Acknowledgement} from './entities';
+import {Query} from 'jslib/http';
 
 /**
  * Acknowledgements Module page.
@@ -95,7 +95,7 @@ class AcknowledgementsIndex extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -106,13 +106,13 @@ class AcknowledgementsIndex extends Component {
    * @return {object}
    */
   async fetchData() {
-    const query = new Query().addParam({ field: 'format', value: 'json' });
+    const query = new Query().addParam({field: 'format', value: 'json'});
     const client = new Acknowledgement.Client();
     try {
       const acknowledgements = await client.get(query);
-      this.setState({ data: { ...acknowledgements } });
+      this.setState({data: {...acknowledgements}});
     } catch (error) {
-      this.setState({ error: true });
+      this.setState({error: true});
       console.error(error);
     }
   }
@@ -155,11 +155,11 @@ class AcknowledgementsIndex extends Component {
    */
   async handleSubmit(e) {
     e.preventDefault(); // prevent default form submission
-    const { formData, submitting } = this.state;
+    const {formData, submitting} = this.state;
 
     if (submitting) return; // prevent multiple submits
 
-    this.setState({ submitting: true }); // set submitting to true
+    this.setState({submitting: true}); // set submitting to true
 
     try {
       const client = new Acknowledgement.Client()
@@ -174,7 +174,7 @@ class AcknowledgementsIndex extends Component {
       swal.fire('Error!', message, 'error');
       console.error(error);
     } finally {
-      this.setState({ submitting: false });
+      this.setState({submitting: false});
     }
   }
 
@@ -214,16 +214,16 @@ class AcknowledgementsIndex extends Component {
     let result = <td>{cell}</td>;
 
     switch (column) {
-      case 'Affiliations':
-        result = <td>{this.parseMultiple(cell, 'affiliationsOptions')}</td>;
-        break;
-      case 'Degrees':
-        result = <td>{this.parseMultiple(cell, 'degreesOptions')}</td>;
-        break;
+    case 'Affiliations':
+      result = <td>{this.parseMultiple(cell, 'affiliationsOptions')}</td>;
+      break;
+    case 'Degrees':
+      result = <td>{this.parseMultiple(cell, 'degreesOptions')}</td>;
+      break;
 
-      case 'Roles':
-        result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
-        break;
+    case 'Roles':
+      result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
+      break;
     }
     return result;
   }
@@ -232,7 +232,7 @@ class AcknowledgementsIndex extends Component {
    * Open Modal form
    */
   openModalForm() {
-    this.setState({ showModal: true });
+    this.setState({showModal: true});
   }
 
   /**
@@ -397,7 +397,7 @@ class AcknowledgementsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      { label: 'Ordering', show: true },
+      {label: 'Ordering', show: true},
       {
         label: 'Full Name', show: true, filter: {
           name: 'fullName',
@@ -410,9 +410,9 @@ class AcknowledgementsIndex extends Component {
           type: 'text',
         },
       },
-      { label: 'Affiliations', show: true },
-      { label: 'Degrees', show: true },
-      { label: 'Roles', show: true },
+      {label: 'Affiliations', show: true},
+      {label: 'Degrees', show: true},
+      {label: 'Roles', show: true},
       {
         label: 'Start Date', show: true, filter: {
           name: 'startDate',

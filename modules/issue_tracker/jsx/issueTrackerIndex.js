@@ -11,7 +11,7 @@ import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
-import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json'
+import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/issue_tracker.json';
 
 /**

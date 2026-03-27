@@ -13,7 +13,7 @@ import CandidateDOD from './CandidateDOD';
 import DiagnosisEvolution from './DiagnosisEvolution';
 import {Tabs, TabPane} from 'Tabs';
 
-import esStrings from '../locale/es/LC_MESSAGES/candidate_parameters.json'
+import esStrings from '../locale/es/LC_MESSAGES/candidate_parameters.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/candidate_parameters.json';
 
 /**

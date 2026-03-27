@@ -6,7 +6,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/user_accounts.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/user_accounts.json';
-import frStrings from '../locale/fr/LC_MESSAGES/user_accounts.json'
+import frStrings from '../locale/fr/LC_MESSAGES/user_accounts.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/user_accounts.json';
 
 import Loader from 'Loader';

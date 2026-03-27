@@ -10,7 +10,7 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
-import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json'
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/imaging_browser.json';
 
 /**

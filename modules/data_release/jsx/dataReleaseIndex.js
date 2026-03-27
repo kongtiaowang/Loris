@@ -16,7 +16,7 @@ import ManageFileForm from './manageFileForm';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/data_release.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/data_release.json';
-import frStrings from '../locale/fr/LC_MESSAGES/data_release.json'
+import frStrings from '../locale/fr/LC_MESSAGES/data_release.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/data_release.json';
 
 /**

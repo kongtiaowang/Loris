@@ -14,7 +14,7 @@ import {withTranslation} from 'react-i18next';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
-import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json'
+import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/candidate_list.json';
 
 /**

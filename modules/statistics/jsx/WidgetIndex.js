@@ -13,7 +13,7 @@ import '../css/WidgetIndex.css';
 
 import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
-import frStrings from '../locale/fr/LC_MESSAGES/statistics.json'
+import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 
 /**

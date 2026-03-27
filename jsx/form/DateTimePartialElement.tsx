@@ -101,6 +101,8 @@ type MaskProps = {
  * React component for an input datetime mask.
  *
  * @param props The props of the component
+ * @param props.value
+ * @param props.children
  * @returns The corresponding React element
  */
 const Mask: React.FC<MaskProps> = ({value, children}) => (

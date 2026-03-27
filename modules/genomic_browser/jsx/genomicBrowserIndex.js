@@ -1,11 +1,11 @@
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
-import { TabPane, Tabs } from 'jsx/Tabs';
+import {TabPane, Tabs} from 'jsx/Tabs';
 import Profiles from './tabs_content/profiles';
 import GWAS from './tabs_content/gwas';
 import SNP from './tabs_content/snp';
@@ -24,12 +24,12 @@ import Files from './tabs_content/files';
  */
 const GenomicBrowser = (props) => {
   const tabList = [
-    { id: 'tabProfiles', label: 'Profiles' },
-    { id: 'tabGWAS', label: 'GWAS' },
-    { id: 'tabSNP', label: 'SNP' },
-    { id: 'tabCNV', label: 'CNV' },
-    { id: 'tabMethylation', label: 'Methylation' },
-    { id: 'tabFiles', label: 'Files' },
+    {id: 'tabProfiles', label: 'Profiles'},
+    {id: 'tabGWAS', label: 'GWAS'},
+    {id: 'tabSNP', label: 'SNP'},
+    {id: 'tabCNV', label: 'CNV'},
+    {id: 'tabMethylation', label: 'Methylation'},
+    {id: 'tabFiles', label: 'Files'},
   ];
 
   /**

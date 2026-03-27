@@ -5,8 +5,8 @@ import i18n from 'I18nSetup';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_uploader.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_uploader.json';
-import frStrings from '../locale/fr/LC_MESSAGES/imaging_uploader.json'
-import zhStrings from '../locale/zh/LC_MESSAGES/imaging_uploader.json';;
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_uploader.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/imaging_uploader.json';
 
 /**
  * Render imaging_uploader on page load

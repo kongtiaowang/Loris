@@ -7,7 +7,7 @@ import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
-import frStrings from '../locale/fr/LC_MESSAGES/bvl_feedback.json'
+import frStrings from '../locale/fr/LC_MESSAGES/bvl_feedback.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/bvl_feedback.json';
 
 import '../css/bvl_feedback_panel.css';

@@ -6,7 +6,7 @@ import {
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
@@ -57,11 +57,11 @@ class DeleteDocCategoryForm extends React.Component {
    * @return {Promise<void>}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data: data, isLoaded: true }))
+      .then((data) => this.setState({data: data, isLoaded: true}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -72,11 +72,11 @@ class DeleteDocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        { ns: 'loris' })}</h3>;
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -88,7 +88,7 @@ class DeleteDocCategoryForm extends React.Component {
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
       deleteButton = <ButtonElement label={t('Delete Category',
-        { ns: 'document_repository' })} />;
+        {ns: 'document_repository'})} />;
     }
 
     return (
@@ -98,10 +98,10 @@ class DeleteDocCategoryForm extends React.Component {
             name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>{t('Delete a category', { ns: 'document_repository' })}</h3><br />
+            <h3>{t('Delete a category', {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="categoryID"
-              label={t('Category Name:', { ns: 'document_repository' })}
+              label={t('Category Name:', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               required={true}
@@ -136,7 +136,7 @@ class DeleteDocCategoryForm extends React.Component {
    * Delete the Category.
    */
   deleteCategory() {
-    const { t } = this.props;
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -158,7 +158,7 @@ class DeleteDocCategoryForm extends React.Component {
         } else if (response.statusText) {
           msg = response.statusText;
         } else {
-          msg = t('Delete error!', { ns: 'document_repository' });
+          msg = t('Delete error!', {ns: 'document_repository'});
         }
         this.setState({
           errorMessage: msg,
@@ -167,16 +167,16 @@ class DeleteDocCategoryForm extends React.Component {
         console.error(msg);
       } else {
         swal.fire({
-          text: t('Delete Successful!', { ns: 'document_repository' }),
+          text: t('Delete Successful!', {ns: 'document_repository'}),
           title: '',
           type: 'success',
-        }).then(function () {
+        }).then(function() {
           window.location.assign('/document_repository');
         });
       }
     }).catch((error) => {
       let msg = error.message ? error.message : t('Delete error!',
-        { ns: 'document_repository' });
+        {ns: 'document_repository'});
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -195,7 +195,7 @@ class DeleteDocCategoryForm extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
 
-    this.setState({ formData });
+    this.setState({formData});
   }
 }
 

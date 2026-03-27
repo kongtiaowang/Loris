@@ -9,7 +9,7 @@ import {useTranslation, Trans} from 'react-i18next';
 import i18n from 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/my_preferences.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/my_preferences.json';
-import frStrings from '../locale/fr/LC_MESSAGES/my_preferences.json'
+import frStrings from '../locale/fr/LC_MESSAGES/my_preferences.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/my_preferences.json';
 
 declare const loris: any;

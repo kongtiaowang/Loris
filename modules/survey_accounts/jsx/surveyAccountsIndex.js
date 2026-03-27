@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import React, { Component } from 'react';
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -34,7 +34,7 @@ class SurveyAccountsIndex extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -45,11 +45,11 @@ class SurveyAccountsIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data }))
+      .then((data) => this.setState({data}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -65,13 +65,13 @@ class SurveyAccountsIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-      case 'URL':
-        const url = loris.BaseURL + '/survey.php?key=' + row.URL;
-        result = <td><a href={url}>{cell}</a></td>;
-        break;
-      case 'Instrument':
-        result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
-        break;
+    case 'URL':
+      const url = loris.BaseURL + '/survey.php?key=' + row.URL;
+      result = <td><a href={url}>{cell}</a></td>;
+      break;
+    case 'Instrument':
+      result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
+      break;
     }
 
     return result;
@@ -104,36 +104,36 @@ class SurveyAccountsIndex extends Component {
         label: 'PSCID', show: true, filter: {
           name: 'pscid',
           type: 'text',
-        }
+        },
       },
       {
         label: 'Visit', show: true, filter: {
           name: 'visit',
           type: 'select',
           options: options.visits,
-        }
+        },
       },
       {
         label: 'Instrument', show: true, filter: {
           name: 'instrument',
           type: 'select',
           options: options.instruments,
-        }
+        },
       },
-      { label: 'URL', show: true },
+      {label: 'URL', show: true},
       {
         label: 'Status', show: true, filter: {
           name: 'Status',
           type: 'select',
           options: options.statusOptions,
-        }
+        },
       },
     ];
     const addSurvey = () => {
       location.href = '/survey_accounts/addSurvey/';
     };
     const actions = [
-      { label: 'Add Survey', action: addSurvey },
+      {label: 'Add Survey', action: addSurvey},
     ];
 
     return (

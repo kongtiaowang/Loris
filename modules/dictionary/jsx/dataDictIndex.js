@@ -11,7 +11,7 @@ import swal from 'sweetalert2';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/dictionary.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dictionary.json';
-import frStrings from '../locale/fr/LC_MESSAGES/dictionary.json'
+import frStrings from '../locale/fr/LC_MESSAGES/dictionary.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/dictionary.json';
 
 /**

@@ -1,8 +1,8 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
 import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
@@ -17,7 +17,7 @@ import zhStrings from '../locale/zh/LC_MESSAGES/imaging_browser.json';
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const [reload, setReload] = useState(0);
   useEffect(() => {
     const modalities = getModalities(props.Files);
@@ -33,7 +33,7 @@ function CandidateScanQCSummaryWidget(props) {
         type: 'bar',
         groups: getDataGroups(modalities),
         colors: getColorFuncs(modalities),
-        onclick: function (d, el) {
+        onclick: function(d, el) {
           const vl = visits[d.index];
           window.location = props.BaseURL
             + '/imaging_browser/viewSession'
@@ -45,14 +45,14 @@ function CandidateScanQCSummaryWidget(props) {
           type: 'category',
           categories: visits,
           label: {
-            text: t('Visit', { ns: 'loris' }),
+            text: t('Visit', {ns: 'loris'}),
             position: 'outer-center',
           },
         },
         y: {
           label: {
             position: 'outer-middle',
-            text: t('Number of Scans', { ns: 'imaging_browser' }),
+            text: t('Number of Scans', {ns: 'imaging_browser'}),
           },
         },
       },
@@ -67,20 +67,20 @@ function CandidateScanQCSummaryWidget(props) {
     <div id='imagebreakdownchart' />
     <ul>
       <li>{t('Red bar denotes number of failed QC scans.',
-        { ns: 'imaging_browser' })}</li>
+        {ns: 'imaging_browser'})}</li>
       <li>{t('Green bar denotes number of passed QC scans.',
-        { ns: 'imaging_browser' })}</li>
+        {ns: 'imaging_browser'})}</li>
       <li>{t('Grey bar denotes other QC statuses.',
-        { ns: 'imaging_browser' })}</li>
+        {ns: 'imaging_browser'})}</li>
     </ul>
     <p>
       {t('Different shades represent different modalities.' +
         ' Only native modalities are displayed in results.',
-        { ns: 'imaging_browser' })}
+      {ns: 'imaging_browser'})}
     </p>
     <p>
       {t('Hover over any visit to see detailed modality breakdown for visit,' +
-        ' click to go to imaging browser.', { ns: 'imaging_browser' })}
+        ' click to go to imaging browser.', {ns: 'imaging_browser'})}
     </p>
   </div>;
 }

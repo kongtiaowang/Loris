@@ -20,7 +20,7 @@ import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/schedule_module.json';
-import frStrings from '../locale/fr/LC_MESSAGES/schedule_module.json'
+import frStrings from '../locale/fr/LC_MESSAGES/schedule_module.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/schedule_module.json';
 
 /**

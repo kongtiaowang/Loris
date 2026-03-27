@@ -10,7 +10,7 @@ import hiStrings from
 import jaStrings from
   '../locale/ja/LC_MESSAGES/examiner.json';
 import frStrings from
-  '../locale/fr/LC_MESSAGES/examiner.json'
+  '../locale/fr/LC_MESSAGES/examiner.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/examiner.json';
 
 import swal from 'sweetalert2';

@@ -9,7 +9,7 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
@@ -60,11 +60,11 @@ class DocCategoryForm extends React.Component {
    * @return {Promise}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data: data, isLoaded: true }))
+      .then((data) => this.setState({data: data, isLoaded: true}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -75,11 +75,11 @@ class DocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        { ns: 'loris' })}</h3>;
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -91,7 +91,7 @@ class DocCategoryForm extends React.Component {
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
       addButton = <ButtonElement label={t('Add Category',
-        { ns: 'document_repository' })} />;
+        {ns: 'document_repository'})} />;
     }
 
     return (
@@ -103,11 +103,11 @@ class DocCategoryForm extends React.Component {
             onSubmit={this.handleSubmit}
           >
             <h3>{t('Add a category',
-              { ns: 'document_repository' })}</h3><br />
+              {ns: 'document_repository'})}</h3><br />
             <TextboxElement
               name="categoryName"
               label={t('Category Name',
-                { ns: 'document_repository' })}
+                {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
@@ -115,7 +115,7 @@ class DocCategoryForm extends React.Component {
             />
             <SelectElement
               name="parentId"
-              label={t('Parent', { ns: 'document_repository' })}
+              label={t('Parent', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               disabled={disabled}
@@ -123,7 +123,7 @@ class DocCategoryForm extends React.Component {
             />
             <TextareaElement
               name="comments"
-              label={t('Comments', { ns: 'document_repository' })}
+              label={t('Comments', {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               disabled={disabled}
               value={this.state.formData.comments}
@@ -207,7 +207,7 @@ class DocCategoryForm extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
 
-    this.setState({ formData });
+    this.setState({formData});
   }
 }
 

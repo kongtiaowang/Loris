@@ -1,8 +1,8 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
 import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
@@ -16,7 +16,7 @@ import zhStrings from '../locale/zh/LC_MESSAGES/conflict_resolver.json';
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const [reload, setReload] = useState(0);
   useEffect(() => {
     const visits = getVisits(props.Conflicts);
@@ -29,7 +29,7 @@ function CandidateConflictsWidget(props) {
       data: {
         columns: getDataBreakdown(visits, instruments, props.Conflicts),
         type: 'bar',
-        onclick: function (d, el) {
+        onclick: function(d, el) {
           // If the user clicked on a bar in the chart, redirect to
           // the specific instrument/visit for this candid.
           window.location = props.BaseURL + '/conflict_resolver/'
@@ -43,20 +43,20 @@ function CandidateConflictsWidget(props) {
           type: 'category',
           categories: visits,
           label: {
-            text: t('Visit', { ns: 'loris' }),
+            text: t('Visit', {ns: 'loris'}),
             position: 'outer-center',
           },
         },
         y: {
           label: {
             position: 'outer-middle',
-            text: t('Number of Conflicts', { ns: 'conflict_resolver' }),
+            text: t('Number of Conflicts', {ns: 'conflict_resolver'}),
           },
         },
       },
       legend: {
         item: {
-          onclick: function (id) {
+          onclick: function(id) {
             // If the user clicked on the legend, redirect to the
             // conflict resolver for that instrument across all
             // visits
@@ -76,12 +76,12 @@ function CandidateConflictsWidget(props) {
       <li>
         {t('Click on instrument in legend to visit conflict resolver '
           + 'for that instrument across all visits.',
-          { ns: 'conflict_resolver' })}
+        {ns: 'conflict_resolver'})}
       </li>
       <li>
         {t('Click on bar in graph to visit conflict resolver '
           + 'for that visit and instrument combination.',
-          { ns: 'conflict_resolver' })}
+        {ns: 'conflict_resolver'})}
       </li>
     </ul>
   </div>;

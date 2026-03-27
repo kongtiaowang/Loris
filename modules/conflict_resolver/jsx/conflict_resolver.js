@@ -10,7 +10,7 @@ import ResolvedFilterableDataTable from './resolved_filterabledatatable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
-import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json'
+import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/conflict_resolver.json';
 
 /**

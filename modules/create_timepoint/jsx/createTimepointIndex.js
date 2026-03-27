@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import Panel from 'Panel';
 import Loader from 'Loader';
@@ -98,7 +98,7 @@ class CreateTimepoint extends React.Component {
   componentDidMount() {
     this.collectParams().then(() => {
       this.fetchInitializerData().then(() => {
-        this.setState({ isLoaded: true });
+        this.setState({isLoaded: true});
       });
     });
   }
@@ -177,14 +177,14 @@ class CreateTimepoint extends React.Component {
         response.json().then((data) => {
           if (data.error) {
             // display conflicts on form.
-            this.setState({ messages: [data.error] });
+            this.setState({messages: [data.error]});
           }
         });
         console.error(response.statusText);
       }
     }).catch((error) => {
       const state = Object.assign({}, this.state);
-      state.messages = [{ message: error }];
+      state.messages = [{message: error}];
       this.setState(state);
     });
   }
@@ -193,7 +193,7 @@ class CreateTimepoint extends React.Component {
    * Cohort refreshes when Project changes.
    */
   handleCohort() {
-    const { t } = this.props;
+    const {t} = this.props;
     const state = Object.assign({}, this.state);
     if (Array.isArray(state.storage.cohort[state.form.value.project])) {
       // Display error message to user.
@@ -203,7 +203,7 @@ class CreateTimepoint extends React.Component {
           ns: 'create_timepoint',
           project: this.state.form.options.project[
             this.state.form.value.project
-          ]
+          ],
         });
       state.messages = [errorMessage];
       state.messages = [errorMessage];
@@ -232,7 +232,7 @@ class CreateTimepoint extends React.Component {
    * Visit Labels refreshes when Cohort changes.
    */
   handleVisitLabel() {
-    const { t } = this.props;
+    const {t} = this.props;
     const state = Object.assign({}, this.state);
     if (state.storage.visit[
       state.form.value.project
@@ -292,7 +292,7 @@ class CreateTimepoint extends React.Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    const { t } = this.props;
+    const {t} = this.props;
     e.preventDefault();
     const state = Object.assign({}, this.state);
     const url = `${this.props.baseURL}/create_timepoint/Timepoint`;
@@ -307,18 +307,18 @@ class CreateTimepoint extends React.Component {
     });
     fetch(
       url, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: send,
-    }
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: send,
+      }
     ).then((response) => {
       if (response.ok) {
         swal.fire(
-          t('Success!', { ns: 'loris' }),
-          t('Timepoint created.', { ns: 'create_timepoint' }), 'success')
+          t('Success!', {ns: 'loris'}),
+          t('Timepoint created.', {ns: 'create_timepoint'}), 'success')
           .then(() => {
             window.location.replace(
               `${this.props.baseURL}/${this.state.url.params.candID}`
@@ -328,7 +328,7 @@ class CreateTimepoint extends React.Component {
         response.json().then((data) => {
           if (data.error) {
             // display conflicts on form.
-            this.setState({ messages: JSON.parse(data.error) });
+            this.setState({messages: JSON.parse(data.error)});
           }
         });
       }
@@ -343,7 +343,7 @@ class CreateTimepoint extends React.Component {
    * @return {JSX} - React create timepoint component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
@@ -358,7 +358,7 @@ class CreateTimepoint extends React.Component {
      */
     const renderErrors = (values) => {
       let messages = [];
-      Object.keys(values).forEach(function (key) {
+      Object.keys(values).forEach(function(key) {
         messages.push(
           <div key={key} className='col-xs-12 col-sm-12 col-md-12'>
             <label className='error form-group'>
@@ -379,7 +379,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'cohort'}
         name={'cohort'}
-        label={t('Cohort', { ns: 'loris', count: 1 })}
+        label={t('Cohort', {ns: 'loris', count: 1})}
         value={this.state.form.value.cohort}
         options={this.state.form.options.cohort}
         onUserInput={this.setForm}
@@ -394,7 +394,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'psc'}
         name={'psc'}
-        label={t('Site', { ns: 'loris', count: 1 })}
+        label={t('Site', {ns: 'loris', count: 1})}
         value={this.state.form.value.psc}
         options={this.state.form.options.psc}
         onUserInput={this.setForm}
@@ -409,7 +409,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'project'}
         name={'project'}
-        label={t('Project', { ns: 'loris', count: 1 })}
+        label={t('Project', {ns: 'loris', count: 1})}
         value={this.state.form.value.project}
         options={this.state.form.options.project}
         onUserInput={this.setForm}
@@ -424,7 +424,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'visit'}
         name={'visit'}
-        label={t('Visit Label', { ns: 'loris' })}
+        label={t('Visit Label', {ns: 'loris'})}
         value={this.state.form.value.visit}
         options={this.state.form.options.visit}
         onUserInput={this.setForm}
@@ -441,7 +441,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'languageID'}
         name={'languages'}
-        label={t('Language', { ns: 'loris' })}
+        label={t('Language', {ns: 'loris'})}
         value={this.state.form.value.languages}
         options={this.state.form.options.languages}
         onUserInput={this.setForm}
@@ -453,7 +453,7 @@ class CreateTimepoint extends React.Component {
     ) : null;
 
     return (
-      <Panel title={t('Create Timepoint', { ns: 'create_timepoint' })}>
+      <Panel title={t('Create Timepoint', {ns: 'create_timepoint'})}>
         {messages}
         <FormElement
           name={'timepointInfo'}
@@ -461,7 +461,7 @@ class CreateTimepoint extends React.Component {
           onSubmit={this.handleSubmit}
         >
           <StaticElement
-            label={t('DCCID', { ns: 'loris' })}
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.data.dccid}
           />
           {psc}
@@ -470,7 +470,7 @@ class CreateTimepoint extends React.Component {
           {visit}
           {languages}
           <ButtonElement
-            label={t('Create Timepoint', { ns: 'create_timepoint' })}
+            label={t('Create Timepoint', {ns: 'create_timepoint'})}
             type={'submit'}
             name={'fire_away'}
           />

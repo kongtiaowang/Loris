@@ -10,7 +10,7 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dicom_archive.json';
-import frStrings from '../locale/fr/LC_MESSAGES/dicom_archive.json'
+import frStrings from '../locale/fr/LC_MESSAGES/dicom_archive.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/dicom_archive.json';
 /**
  * DICOM Archive Page.

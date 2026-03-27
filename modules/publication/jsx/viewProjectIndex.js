@@ -4,8 +4,8 @@ import i18n from 'I18nSetup';
 import frStrings from '../locale/fr/LC_MESSAGES/publication.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';
-import enStrings from '../locale/en/LC_MESSAGES/publication.json'
-import zhStrings from '../locale/zh/LC_MESSAGES/publication.json';;
+import enStrings from '../locale/en/LC_MESSAGES/publication.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/publication.json';
 const args = QueryString.get(document.currentScript.src);
 
 document.addEventListener('DOMContentLoaded', () => {

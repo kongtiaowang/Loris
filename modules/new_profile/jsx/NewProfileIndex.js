@@ -19,7 +19,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
 import esStrings from '../locale/es/LC_MESSAGES/new_profile.json';
-import frStrings from '../locale/fr/LC_MESSAGES/new_profile.json'
+import frStrings from '../locale/fr/LC_MESSAGES/new_profile.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/new_profile.json';
 
 /**
