@@ -295,3 +295,89 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+
+  sql-migrations:
+    name: SQL migration test
+    runs-on: ubuntu-latest
+
+    env:
+      DB_DATABASE: LorisMigrationTest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -uroot -proot -e "CREATE DATABASE ${DB_DATABASE};"
+
+      - name: Run DB default schema sql files
+        run: |
+          set -e
+          echo "Running SQL migrations..."
+          for f in SQL/[0-0][0-9][0-9][0-9]-*.sql; do
+            echo "--------------------------------------------------"
+            echo "Running schema: $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+      - name: Assert database is empty after running 9999-99-99
+        run: |
+          set -e
+
+          echo "--------------------------------------------------"
+          echo "Running final drop tables migration (9999-99-99)..."
+          mysql ${DB_DATABASE} -uroot -proot < SQL/9999-99-99-drop_tables.sql
+
+          echo "--------------------------------------------------"
+          echo "Checking remaining tables in database..."
+
+          TABLE_COUNT=$(mysql ${DB_DATABASE} -uroot -proot -N -e "
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_schema = '${DB_DATABASE}';
+          ")
+
+          echo "Remaining tables: $TABLE_COUNT"
+
+          if [ "$TABLE_COUNT" -ne 0 ]; then
+            echo "ERROR: Database is NOT empty after final migration!"
+            echo "Remaining tables:"
+            mysql ${DB_DATABASE} -uroot -proot -e "
+              SELECT table_name
+              FROM information_schema.tables
+              WHERE table_schema = '${DB_DATABASE}';
+            "
+            exit 1
+          fi
+
+          echo "Database is empty after final migration"
+
+      - name: Run 27.0 base schema (0000-000-00)
+        run: |
+          set -e
+
+          git fetch origin 27.0-release
+          git checkout 27.0-release
+
+          for f in SQL/[0-0][0-9][0-9][0-9]-*.sql; do
+            echo "--------------------------------------------------"
+            echo "Running schema: $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+      - name: Run SQL New_patches
+        run: |
+          set -e
+          git fetch origin 28.0-release
+          git checkout 28.0-release
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-06-BiobankTables.sql
+          for f in SQL/New_patches/*.sql; do
+            if [[ "$f" == *"add-order-index-to-specimen-protocols.sql" ]]; then
+              echo "Skipping deprecated patch: $f"
+              continue
+            fi
+            echo "Running $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
