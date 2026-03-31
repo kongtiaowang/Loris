@@ -6,7 +6,7 @@ CREATE TABLE `modules` (
   UNIQUE KEY `modules_id` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO modules (Name, Active) VALUES ('acknowledgements', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('acknowledgements_manager', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('api', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('battery_manager', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('behavioural_qc', 'Y');
