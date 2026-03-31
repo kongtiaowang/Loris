@@ -466,7 +466,7 @@ AcknowledgementsIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'acknowledgements_manager', {});
   const submitURL = loris.BaseURL +
-    '/acknowledgements_manager/AcknowledgementsProcess`;
+    '/acknowledgements_manager/AcknowledgementsProcess';
   const Index = withTranslation(
     ['acknowledgements_manager', 'loris']
   )(AcknowledgementsIndex);
