@@ -102,7 +102,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testAcknowledgementsDoespageLoadWithView()
     {
         $this->setupPermissions(["acknowledgements_view"]);
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgements_manager/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -126,7 +126,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testAcknowledgementsDoespageLoadwithEdit()
     {
         $this->setupPermissions(["acknowledgements_edit"]);
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgements_manager/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -150,7 +150,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     public function testPermissions(): void
     {
         $this->checkPagePermissions(
-            '/acknowledgements/',
+            '/acknowledgements_manager/',
             [
                 'acknowledgements_view',
                 'acknowledgements_edit'
@@ -166,7 +166,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testFilters()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgements_manager/");
         $this->_filterTest(
             self::$fullname,
             self::$display,
@@ -214,7 +214,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testCantAddNewRecord()
     {
         $this->setupPermissions(["acknowledgements_view"]);
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgements_manager/");
         $pagetext = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -230,7 +230,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testConfigSettingPolicy()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgements_manager/");
         $pagetext = $this->safeFindElement(
             WebDriverBy::cssSelector("#citationPolicy")
         )->getText();
