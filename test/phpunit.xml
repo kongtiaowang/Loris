@@ -12,7 +12,7 @@
     </testsuite>
     <testsuite name="LorisModuleIntegrationTests">
       <directory>../modules/api/test/</directory>
-      <directory>../modules/acknowledgements/test/</directory>
+      <directory>../modules/acknowledgements_manager/test/</directory>
       <directory>../modules/battery_manager/test/</directory>
       <directory>../modules/brainbrowser/test/</directory>
       <directory>../modules/bvl_feedback/test/</directory>

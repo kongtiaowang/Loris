@@ -464,14 +464,17 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'acknowledgements', {});
+  i18n.addResourceBundle('ja', 'acknowledgements_manager', {});
+  const submitURL = loris.BaseURL +
+    '/acknowledgements_manager/AcknowledgementsProcess';
   const Index = withTranslation(
-    ['acknowledgements', 'loris']
+    ['acknowledgements_manager', 'loris']
   )(AcknowledgementsIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
     <Index
+      submitURL={submitURL}
       hasPermission={loris.userHasPermission}
     />
   );
