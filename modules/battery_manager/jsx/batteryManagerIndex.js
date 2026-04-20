@@ -15,6 +15,8 @@ import BatteryManagerForm from './batteryManagerForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/battery_manager.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/battery_manager.json';
 import frStrings from '../locale/fr/LC_MESSAGES/battery_manager.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/battery_manager.json';
+
 
 /**
  * Battery Manager
@@ -661,6 +663,8 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'battery_manager', hiStrings);
   i18n.addResourceBundle('ja', 'battery_manager', jaStrings);
   i18n.addResourceBundle('fr', 'battery_manager', frStrings);
+  i18n.addResourceBundle('zh', 'battery_manager', zhStrings);
+
   const Index = withTranslation(
     ['battery_manager', 'loris']
   )(BatteryManagerIndex);
