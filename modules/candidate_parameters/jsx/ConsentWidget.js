@@ -19,7 +19,12 @@ function ConsentWidget(props) {
       'candidate_parameters',
       require('../locale/ja/LC_MESSAGES/candidate_parameters.json')
     );
-    // Change a state to force a reload now that the terms have been added.
+    i18n.addResourceBundle(
+      'zh',
+      'candidate_parameters',
+      require('../locale/zh/LC_MESSAGES/candidate_parameters.json')
+    );
+  // Change a state to force a reload now that the terms have been added.
     setReload(reload+1);
   }, [i18n]);
   if (props.Consents.length == 0) {
