@@ -123,15 +123,19 @@ class NDB_Client
         //    seems to load a font that way.
         // 5. Allow reCAPTCHA domains iff the CAPTCHA keys were set
         //    up by the project
-        header(
-            "Content-Security-Policy: "
-            . "default-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
-            . "font-src 'self' data:; "
-            . "img-src 'self' data:; "
-            . $config_additions
-        );
-        // start php session
+header(
+    "Content-Security-Policy: "
+    . "default-src 'self' 'unsafe-inline'; "
+    . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com; "
+    . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+    . "img-src 'self' 'unsafe-inline' data:; "
+    . "font-src 'self' 'unsafe-inline' data:; "
+    . "object-src 'none'; "
+    . "frame-ancestors 'none'; "
+    . "form-action 'self'; "
+);
+
+// start php session
         $sessionOptions = array('cookie_httponly' => true);
         $sessionOptions['cookie_samesite'] = true;
 

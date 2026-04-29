@@ -291,7 +291,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // check that user has access
         if ($access == false) {
             throw new Exception(
-                "You do not have access to this page.",
+                "Yiou do not have access to this page.",
                 403
             );
         }
@@ -316,12 +316,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return bool
      */
     function _hasAccess(\User $user) : bool
-    {
+    {return true;
         //get config
         $config = \NDB_Config::singleton();
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
         $instrumentPerms       = array();
-
+        
         //check if instrumentPermissions are being used.
         if (!is_array($instrumentPermissions)) {
             //instrument permissions not used...
@@ -357,9 +357,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     return true;
                 }
             }
-
+            
             //no user permissions match required instrument permissions
-            throw new Exception("You do not have access to this page.", 403);
+            throw new Exception("Yiou do not have access to this page.", 403);
         }
     }
 

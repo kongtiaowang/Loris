@@ -66,8 +66,8 @@ class FilesDownloadHandler implements RequestHandlerInterface
                 ['GET']
             );
         }
-        //Use basename to remove path traversal characters.
-        $filename = basename($request->getAttribute('filename'));
+
+        $filename = $request->getAttribute('filename');
 
         if (empty($filename)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -75,9 +75,44 @@ class FilesDownloadHandler implements RequestHandlerInterface
             );
         }
 
-        $targetPath = \Utility::appendForwardSlash(
-            $this->downloadDirectory->getPathname()
-        ) . $filename;
+        assert(is_string($filename) || $filename instanceof \Stringable);
+
+        // ==========================================
+        // [Security Fix] Prevent directory traversal
+        // without relying on physical file existence.
+        // ==========================================
+        
+        // 1. Get base path and ensure it ends with a separator
+        $baseDir = rtrim($this->downloadDirectory->getPathname(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        
+        // 2. Decode filename parameter
+        $filename = urldecode(strval($filename));
+        
+        // 3. Combine paths and unify backslashes to forward slashes for cross-platform safety
+        $unifiedBaseDir = str_replace('\\', '/', $baseDir);
+        $unifiedPath = $unifiedBaseDir . $filename;
+        $unifiedPath = str_replace('\\', '/', $unifiedPath);
+
+        // 4. Recursively remove all ../ or ./ instances
+        $pattern = '/\/\.(?:\.)?\/+/';
+        while (preg_match($pattern, $unifiedPath)) {
+            $unifiedPath = preg_replace($pattern, '/', $unifiedPath);
+        }
+        
+        // Remove redundant multiple slashes (e.g., foo///bar becomes foo/bar)
+        $unifiedPath = preg_replace('/\/+/', '/', $unifiedPath);
+
+        // 5. Verify Prefix: Ensure the final path still starts with the base directory
+        if (strpos($unifiedPath, $unifiedBaseDir) !== 0) {
+            return new \LORIS\Http\Response\JSON\Forbidden("Access denied: Path traversal detected.");
+        }
+
+        // 6. Restore system-specific directory separators
+        $targetPath = str_replace('/', DIRECTORY_SEPARATOR, $unifiedPath);
+
+        // ==========================================
+        // [Security Fix End]
+        // ==========================================
 
         if (!file_exists($targetPath)) {
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -97,7 +132,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         return (new \LORIS\Http\Response\JSON\OK())
             ->withHeader(
                 'Content-Disposition',
-                'attachment; filename=' . $filename
+                'attachment; filename=' . urlencode(basename($filename))
             )
             ->withHeader(
                 'Content-Type',

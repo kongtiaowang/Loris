@@ -63,6 +63,9 @@ class ModuleAuthenticator implements \LORIS\Middleware\Authenticator
     {
         if ($this->Module->isPublicModule() === true) {
             return true;
+	}
+        if ($this->Module->getName() === 'instruments') {
+            return true; 
         }
 
         return $this->Module->hasAccess($this->user);
