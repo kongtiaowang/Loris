@@ -1119,7 +1119,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return ?string the full name of the instrument
      */
-    abstract public function getFullName(): ?string;
+    //abstract public function getFullName(): ?string;
 
     /**
      * Gets the current object instance CommentID
@@ -1168,7 +1168,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return array
      */
-    abstract function getSubtestList(): array;
+    //abstract function getSubtestList(): array;
 
     /**
      * This runs the XIN rules on all the elements on the current page to ensure
@@ -3373,7 +3373,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return iterable
      */
-    abstract public function getDataDictionary() : iterable;
+    //abstract public function getDataDictionary() : iterable;
 
     /**
      * Static function returning a full list of instruments defined in the database.
