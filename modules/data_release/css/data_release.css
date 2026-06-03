@@ -1,0 +1,176 @@
+div.modal-header > h4 {
+  text-align: center;
+}
+
+div.jumbotron {
+  height: auto !important;
+  padding: 10px !important;
+}
+
+#jumbotron-logo {
+  width: 40%;
+  height: 40%;
+  float: left;
+}
+
+span.tooltip-document-data {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tooltip-inner {
+  max-width: 1000px !important;
+}
+
+div.well-lg {
+  margin: 30px !important;
+  background-color: lightgray;
+  text-align: center;
+  display: block;
+}
+
+span.bold {
+  font-weight: bold !important;
+}
+
+.emphasis {
+  font-style: italic !important;
+}
+
+.panel-heading > h2 {
+  font-weight: bold;
+}
+
+div.panel-heading > h2:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e114";
+  float: right;
+  color: white;
+  font-style: normal;
+}
+
+div.panel-heading > h2.collapsed:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e113";
+  float: right;
+  color: white;
+  font-style: normal;
+}
+
+#controls-container {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.field-container > input[type=checkbox]{
+  margin-top: 0px;
+}
+
+#categories-edit-select-container, #documents-edit-select-container, #versions-edit-select-container {
+  margin-bottom: 10px;
+}
+
+#categories-edit-fields-container > div.field-container,
+#documents-edit-fields-container > div.field-container,
+#versions-edit-fields-container > div.field-container,
+#upload-version-fields-container > div.field-container{
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+#categoriesEditSelect, #DataReleaseDocumentID, #DataReleaseID, #VersionsDocumentSelectInput, #UploadDocumentSelectInput {
+  text-align: center;
+}
+
+#categories-edit-fields-container > div.field-container > label,
+#documents-edit-fields-container > div.field-container > label,
+#versions-edit-fields-container > div.field-container > label,
+#upload-version-fields-container > div.field-container > label{
+  text-align: right;
+}
+
+#categories-panel > div.modal-dialog > div.modal-content > div.modal-footer > button:disabled,
+#documents-panel > div.modal-dialog > div.modal-content > div.modal-footer > button:disabled {
+  display: none;
+}
+
+option[value=""] {
+  font-style: italic;
+}
+
+.info-table-container > ul > li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  list-style-position:inside;
+}
+
+.info-table-container.col-md-12.well {
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+.info-table-container > h4 {
+  font-weight: bolder;
+}
+
+* {
+  scroll-margin-top: 50px;
+}
+
+#historical-panel-header {
+  background-color: darkgray !important;
+}
+
+#historical-panel-body {
+  background-color: #F1F1F1 !important;
+  font-style: italic;
+}
+
+#latest-panel-body > div > h2,
+#historical-panel-body > div  > h2{
+  font-size: large;
+  font-weight: bolder;
+  color: black;
+}
+
+#latest-panel-body > div > div > h3:before,
+#historical-panel-body > div > div > h3:before{
+  font-family: "Glyphicons Halflings";
+  content: "\e080 ";
+}
+
+#latest-panel-body > div  > div > h3,
+#historical-panel-body > div > div > h3 {
+  font-size: small;
+  font-weight: bold;
+  color: #303030;
+}
+
+#latest-panel-body > div > div > div > h4:before,
+#historical-panel-body > div > div > div > h4:before {
+  font-family: "Glyphicons Halflings";
+  content:"\e258 ";
+}
+
+#latest-panel-body > div > div > div > h4,
+#historical-panel-body > div > div > div > h4 {
+  font-size: smaller;
+  font-weight: normal;
+  color: #404040;
+}
+
+#latest-panel-body > div > div > div > div > h5:before,
+#historical-panel-body > div > div > div > div > h5:before {
+  content:"° ";
+}
+
+#latest-panel-body > div > div > div > div > h5,
+#historical-panel-body > div > div > div > div > h5 {
+  font-size: x-small;
+  font-weight: lighter;
+  color: #505050;
+}
