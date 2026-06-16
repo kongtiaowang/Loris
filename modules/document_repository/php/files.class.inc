@@ -62,28 +62,6 @@ class Files extends \NDB_Page
             $config->getSetting("documentRepositoryPath")
         );
 
-        if ($request->getMethod() != "POST") {
-            $factory = \NDB_Factory::singleton();
-            $user    = $factory->user();
-            $db      = $factory->database();
-
-            $filename = explode(
-                'Files',
-                urldecode($request->getUri()->getPath())
-            )[1];
-
-            $forSite = $db->pselectOne(
-                "SELECT For_site
-                 FROM document_repository
-                 WHERE Data_dir = :file_dir",
-                ['file_dir' => mb_substr($filename, 1)]
-            );
-
-            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
-                return (new \LORIS\Http\Response\JSON\Forbidden());
-            }
-        }
-
         switch ($request->getMethod()) {
         case "POST":
             return $this->uploadDocFile($request);
@@ -112,6 +90,23 @@ class Files extends \NDB_Page
                 'Files',
                 $request->getUri()->getPath()
             )[1];
+
+            // Check that the user belongs to the site that this file
+            // is restricted to, before serving the file download.
+            $factory = \NDB_Factory::singleton();
+            $user    = $factory->user();
+            $db      = $factory->database();
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
+            if (!empty($forSite)
+                && ! $user->hasCenter(\CenterID::singleton((int)$forSite))
+            ) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
+            }
 
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(

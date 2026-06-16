@@ -33,32 +33,38 @@ namespace LORIS\document_repository;
  */
 class DocRepoRow implements
     \LORIS\Data\DataInstance,
-    \LORIS\StudyEntities\SiteHaver
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
 
-    private \CenterID $CenterID;
+    private ?\CenterID $CenterID;
 
     /**
      * Create a new HelpRow
      *
-     * @param array     $row The row
-     * @param \CenterID $cid The CenterID
+     * @param array      $row The row
+     * @param ?\CenterID $cid The CenterID, or null if the document is not
+     *                        restricted to a specific site
      */
-    public function __construct(array $row, \CenterID $cid)
+    public function __construct(array $row, ?\CenterID $cid)
     {
         $this->DBRow    = $row;
         $this->CenterID = $cid;
     }
 
     /**
-     * Returns the CenterID for this row
+     * Returns the CenterIDs for this row. Returns an empty array when the
+     * document has no site restriction (For_site is NULL), which means it
+     * is visible to all users regardless of their site membership.
      *
-     * @return \CenterID
+     * @return \CenterID[]
      */
-    public function getCenterID(): \CenterID
+    public function getCenterIDs(): array
     {
-        return $this->CenterID;
+        if ($this->CenterID === null) {
+            return [];
+        }
+        return [$this->CenterID];
     }
 
     /**

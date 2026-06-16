@@ -41,7 +41,13 @@ class UserSiteMatch implements \LORIS\Data\Filter
         if ($resource instanceof \LORIS\StudyEntities\MultiSiteHaver) {
             // If the Resource belongs to multiple CenterIDs, the user can
             // access the data if the user is part of any of those centers.
-            foreach ($resource->getCenterIDs() as $site) {
+            // An empty CenterIDs array means the resource has no site
+            // restriction and is accessible to all users.
+            $centerIDs = $resource->getCenterIDs();
+            if (empty($centerIDs)) {
+                return true;
+            }
+            foreach ($centerIDs as $site) {
                 if ($user->hasCenter($site)) {
                        return true;
                 }
