@@ -32,7 +32,7 @@ class Files extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -78,7 +78,7 @@ class Files extends \NDB_Page
                 ['file_dir' => mb_substr($filename, 1)]
             );
 
-            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+            if (!empty($forSite) && ! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
                 return (new \LORIS\Http\Response\JSON\Forbidden());
             }
         }
@@ -265,6 +265,7 @@ class Files extends \NDB_Page
         $query   ="SELECT " .
                 "record_id as id, " .
                 "PSCID as pscid, " .
+                "For_site as forSite, " .
                 "File_category as category," .
                 "visitLabel, " .
                 "Instrument as instrument, " .
