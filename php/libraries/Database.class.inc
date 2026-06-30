@@ -90,7 +90,7 @@ class Database implements LoggerAwareInterface
      * @deprecated
      */
     static function singleton(
-        string $database,
+        string $database='',
         bool $trackChanges = true
     ): \Database {
         // We don't have access to $this->logger since it's a static function,
