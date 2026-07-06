@@ -68,8 +68,8 @@ function Filter(props) {
   const renderFilterFields = () => {
     return props.fields.reduce((result, field) => {
       const filter = field.filter;
-      if (filter && filter.hide !== true) {
-        let element;
+      if (filter && filter.hide !== true && field.show !== false) {
+	    let element;
         switch (filter.type) {
         case 'text':
           element = <TextboxElement/>;
