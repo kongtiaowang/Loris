@@ -4,12 +4,6 @@
   <thead>
   <tr class="info">
     <th>
-      {dgettext("timepoint_list", "Derived Age")}
-    </th>
-    <th>
-      {dgettext("timepoint_list", "EDC Age")}
-    </th>
-    <th>
       {dgettext("timepoint_list", "Biological Sex")}
     </th>
     <th>
@@ -25,12 +19,6 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    <td>
-      {$dob_age}
-    </td>
-    <td>
-      {$edc_age}
-    </td>
     <td>
       {$candidate.Sex}
     </td>
