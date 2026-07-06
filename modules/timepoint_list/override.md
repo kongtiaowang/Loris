@@ -1,1 +1,2 @@
 modules/timepoint_list/templates/timepoint_list_controlpanel.tpl
+menu_timepoint_list.tpl 

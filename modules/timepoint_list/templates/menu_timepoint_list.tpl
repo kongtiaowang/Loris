@@ -72,11 +72,7 @@
             <th>{dgettext("timepoint_list", "Date of Stage")}</th>
             <th>{dgettext("loris", "Sent To DCC")}</th>
             <th>{dgettext("timepoint_list", "Imaging Scan Done")}</th>
-            <th>{dgettext("loris", "Feedback")}</th>
-            <th>{dgettext("timepoint_list", "BVL QC")}</th>
-            <th>{dgettext("timepoint_list", "BVL Exclusion")}</th>
             <th>{dgettext("timepoint_list", "Registered By")}</th>
-            <th>{dgettext("loris", "Language")}</th>
         </tr>
     </thead>
     <tbody>
@@ -122,45 +118,13 @@
             {/if}
             </td>
 
-            <td bgColor="{$timePoints[timepoint].feedbackColor}">
-            {if $timePoints[timepoint].feedbackCount}
-                {dgettext("timepoint_list", $timePoints[timepoint].feedbackStatus)}
-            {else}
-                -
-            {/if}
-            </td>
-
-            <td>
-            {if $timePoints[timepoint].BVLQCStatus}
-                {if $timePoints[timepoint].BVLQCType != ""}
-		    {dgettext("timepoint_list", $timePoints[timepoint].BVLQCType)}
-                {/if}
-            {else}
-                <img src="{$baseurl|default}/images/delete.gif" border="0" />
-            {/if}
-            </td>
-
-            <td>
-            {if $timePoints[timepoint].BVLQCExclusion}
-                {if $timePoints[timepoint].BVLQCExclusion == 'Not Excluded'}
-                {dgettext("loris", "Pass")}
-                {else}
-                {dgettext("loris", "Failure")}
-                {/if}
-            {else}
-                <img src="{$baseurl|default}/images/delete.gif" border="0" />
-            {/if}
-            </td>
-
             <td>
                 {$timePoints[timepoint].Real_name}
             </td>
-<td>
-                {$timePoints[timepoint].language->label}
-</td>
         </tr>
     {sectionelse}
         <tr><td colspan="10">{dgettext("timepoint_list", "You do not have access to any timepoints registered for this candidate.")}</td></tr>
     {/section}
     </tbody>
 </table>
+
