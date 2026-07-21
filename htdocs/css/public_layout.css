@@ -1,29 +1,29 @@
 @font-face {
-    font-family: 'PT Sans';
-    font-weight: 400;
-    font-style: normal;
-    src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot');
-    src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
-    local('PT Sans'),
-    local('PT-Sans-regular'),
-    url('/fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
-    url('/fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
-    url('/fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
-    url('/fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
+  font-family: 'PT Sans';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot');
+  src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
+  local('PT Sans'),
+  local('PT-Sans-regular'),
+  url('/fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
+  url('/fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
+  url('/fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
+  url('/fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
 }
 
 @font-face {
-    font-family: 'PT Sans';
-    font-weight: 700;
-    font-style: normal;
-    src: url('/fonts/PT-Sans-700/PT-Sans-700.eot');
-    src: url('/fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
-    local('PT Sans Bold'),
-    local('PT-Sans-700'),
-    url('/fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
-    url('/fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
-    url('/fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
-    url('/fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
+  font-family: 'PT Sans';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/PT-Sans-700/PT-Sans-700.eot');
+  src: url('/fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
+  local('PT Sans Bold'),
+  local('PT-Sans-700'),
+  url('/fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
+  url('/fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
+  url('/fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
+  url('/fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
 }
 
 /* Stylesheet for login, reset password and request account pages */
@@ -31,204 +31,185 @@ html, body {
   margin:0;
   padding:0;
   height: 100vh;
-  font-family: sans-serif;
+  font-family: 'PT Sans', sans-serif;
 }
 
 h1, h2, h3, h4 {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .btn {
-    -webkit-transition: background-color 0.2s ease-in;
-    transition: background-color 0.2s ease-in;
+  -webkit-transition: background-color 0.2s ease-in;
+  transition: background-color 0.2s ease-in;
 }
 
 .header {
-    height: 100px;
-    background-color: #064785;
-    padding: 0;
-    position: relative;
-}
-
-.header-container {
-    margin-right: auto;
-    margin-left: auto;
-    padding-left: 15px;
-    padding-right: 15px;
-    height: 100%;
-    display: flex;
-    align-items: center;
+  background-color: #0d5f3a;
+  padding: 5px 0;
 }
 
 .flex-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    padding: 0 20px;
-    box-sizing: border-box;
-    max-width: 1170px;
-    margin: auto;
+  display: flex;
+  align-items: center;
 }
 
-.logo-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-height: 100%;
-    max-width: 120px;
+.header .loris-logo {
+  vertical-align: middle;
 }
 
-.logo-wrapper img {
-    max-height: 120px;
-    height:auto;
-    width: auto;
+.header .loris-logo img {
+  margin: auto;
+  display: block;
 }
 
-.logo-left {
-    margin-right: auto;
+.header .mcgill-logo {
+  vertical-align: middle;
 }
 
-.logo-right {
-    margin-left: auto;
+.header .mcgill-logo img {
+  margin: auto;
+  display: block;
 }
 
-.logo-right img {
-    width: 100%;
-    height: 100%;
-    max-width: 64px;
-    max-height: 64px;
+.header .nav-link {
+  color: #fff;
+  font-size: 22px;
+  line-height: 130px;
 }
 
-.d-none {
-    display: none;
-}
-
-.study-title {
-    flex: 1;
-    padding: 0 20px;
-    color: #eee;
-    font-size: 25px;
-    font-weight: 600;
-    font-variant: small-caps;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 10px;
+.header .study-title {
+  width: 500px;
+  padding: 0 20px;
+  color: #eee;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
 }
 
 .main-content {
-    background-color: #f8f8f8;
-    padding: 30px 0;
-    height: auto;
-    min-height: calc(100vh - 200px);
+  background-color: #f8f8f8;
+  padding: 30px 0;
+  height: auto;
+  min-height: calc(100vh - 200px);
 }
 
 .main-content .study-panel,
 .main-content .login-panel {
-    min-height: 500px;
+  min-height: 500px;
 }
 
 .main-content .login-panel form {
-    max-width: 300px;
-    margin: 0 auto;
+  max-width: 300px;
+  margin: 0 auto;
 }
 
 .main-content .login-panel .help-links {
-    text-align: center;
+  text-align: center;
 }
 
 .main-content .login-panel .help-text {
-    font-size: 12px;
-    padding: 10px 0;
-    text-align: center;
-    color: #555;
+  font-size: 12px;
+  padding: 10px 0;
+  text-align: center;
+  color: #555;
 }
 
 .main-content .study-logo {
-    max-width: 200px;
-    margin: 0 auto 10px auto;
-    padding: 15px;
+  max-width: 200px;
+  margin: 0 auto 10px auto;
+  padding: 15px;
 }
 
 .main-content .study-logo img {
-    width: 100%;
+  width: 100%;
 }
 
-.footer {
-    font-size: 12px;
-    text-align: center;
-    background-color: #064785;
-    color: #f8f8f8;
-    height: 60px;
-    padding: 15px;
+footer {
+  background-color: #0d5f3a;
+  padding: 5px 0;
 }
 
-.footer a {
-    color: #f8f8f8;
-    font-weight: 700;
+footer .container {
+  font-size: 12px;
+  text-align: center;
+  color: #f8f8f8;
+}
+
+span.emphasis {
+  font-style: italic;
+}
+
+span.bold {
+  font-weight: bold;
+}
+
+span.error-message {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  padding: 20px;
+}
+
+div.well > * {
+  text-align: center;
+}
+
+footer a {
+  color: #f8f8f8;
+  font-weight: 700;
+}
+
+.footer .loris-logo {
+  vertical-align: middle;
+}
+
+.footer .loris-logo img {
+  margin: auto;
+  display: block;
 }
 
 .panel-center {
-    max-width: 450px;
-    margin: 0 auto;
+  max-width: 450px;
+  margin: 0 auto;
 }
 
 .panel-center form {
-    padding: 20px 25px;
+  padding: 20px 25px;
 }
 
 .success-message {
-    text-align: center;
-    padding: 0 20px 40px 20px;
+  text-align: center;
+  padding: 0 20px 40px 20px;
 }
 
-@media (max-width: 768px) {
-    .flex-wrapper {
-        padding-left: 0;
-        padding-right: 0;
-    }
+section.study-description > h3 {
+  text-align: center;
+}
 
-    .logo-left img {
-        width: 100%;
-    }
+section.study-description > div.flex-wrapper {
+  justify-content: center;
+}
 
-    .logo-right a {
-        display: flex;
-        justify-content: end;
-    }
-
-    .logo-right img {
-        max-width: 80%;
-    }
+/* Cells and smaller */
+@media (max-width: 767px) {
+  .main-content {
+    display: flex;
+    align-items: center;
+  }
 }
 
 /* Tablets and bigger */
 @media (min-width: 768px) {
-    .header {
-        height: 140px;
-    }
-
-    .header .loris-logo img {
-        height: 130px;
-    }
-
-    .header .github-logo {
-        padding-right: 20px;
-    }
-
-    .main-content {
-        display: flex;
-        align-items: center;
-    }
+  .main-content {
+    display: flex;
+    align-items: center;
+  }
 }
 
 /* Small desktops and bigger */
 @media (min-width: 991px) {
-    .header .loris-logo {
-        margin-right: 40px;
-    }
+  .main-content {
+    display: flex;
+    align-items: center;
+  }
 }

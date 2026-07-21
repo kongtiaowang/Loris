@@ -8,13 +8,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{$study_title}</title>
+  <title>{$page_title}</title>
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
-  <script>
-  const loris = { user: { langpref: "{$language}" }};
-  </script>
   {section name=jsfile loop=$jsfiles}
     <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
   {/section}
@@ -25,62 +22,46 @@
 </head>
 <body>
   <header class="header">
-    <div class="header-container">
+    <div class="container">
       <div class="flex-wrapper">
-        <!-- Left Logo (conditionally a link) -->
-        <div class="logo-wrapper logo-left{if !isset($logo_left)} d-none{/if}">
-          {if isset($logo_left_link)}
-            <a href="{$logo_left_link}">
-              <img src="{$logo_left}" alt="Left Logo"/>
-            </a>
-          {else}
-            <img src="{$logo_left}" alt="Left Logo"/>
-          {/if}
+        <div class="loris-logo col-md-4 col-xs-12 col-sm-6">
+          <a href="{$baseurl}"
+             rel="noopener noreferrer">
+            <img src="{$baseurl}/images/PreventAD_logo.svg" class="loris-logo img-responsive" alt="PreventAD Logo"/>
+          </a>
         </div>
-        <!-- Center Study Title -->
-        <div class="study-title hidden-xs">
+        <div class="study-title hidden-xs col-md-8 col-sm-6">
           {$study_title}
         </div>
-        <!-- Right Logo (conditionally a link) -->
-        <div class="logo-wrapper logo-right{if !isset($logo_right)} d-none{/if}">
-          {if isset($logo_right_link)}
-            <a href="{$logo_right_link}" target="_blank" rel="noopener noreferrer">
-              <img src="{$logo_right}" alt="Right Logo"/>
+        <div class="mcgill-logo hidden-xs hidden-sm col-md-4">
+          <a href="https://mcgill.ca/"
+             target="_blank"
+             rel="noopener noreferrer">
+            <img src="{$baseurl}/images/mcgill_logo.png" class="img-responsive" alt="McGill University"/>
             </a>
-          {else}
-            <img src="{$logo_right}" alt="Right Logo"/>
-          {/if}
-        </div>
-
-      {if count($languages) > 1}
-        <div style="padding: 2ex">
-        <form method="get" >
-          <div class="form-group">
-            <select class="form-control" name="lang" onChange="this.form.submit()">
-              {foreach from=$languages key=langcode item=lang}
-                <option value={$langcode} {if $langcode==$language}selected="selected"{/if}>{$lang}</option>
-              {/foreach}
-            </select>
-          </div>
-        </form>
-        </div>
-      {/if}
+            </div>
       </div>
     </div>
   </header>
-
   <section class="main-content">
     {$workspace}
   </section>
-
   <footer class="footer">
-    Powered by <a href="https://loris.ca/" target="_blank">LORIS</a>
-    | GPL-3.0 &copy; {$currentyear} <br/>
-    Developed at
-    <a href="https://mcgill.ca/neuro/" target="_blank">
-      The Neuro (Montreal Neurological Institute-Hospital)
-    </a>
-    by <a href="https://mcin.ca/" target="_blank">MCIN</a>
+      <div class="container">
+          <div class="flex-wrapper">
+              <div class="container col-md-2 col-md-offset-2">
+                  <a href="https://github.com/aces/Loris"
+                     target="_blank"
+                     rel="noopener noreferrer">
+                      <img src="/images/LORIS_logo_white.svg" class="img-responsive"/>
+                  </a>
+              </div>
+              <div class="container col-md-4">
+                  <p>Powered by <a href="https://loris.ca" target="_blank" rel="noopener noreferrer">LORIS</a> | GPL-3.0 &copy; {$currentyear}<br/>Developed at <a href="https://www.mcgill.ca/neuro/" target="_blank" rel="noopener noreferrer">Montreal Neurological Institute and Hospital</a> by <a href="https://mcin.ca" target="_blank" rel="noopener noreferrer">MCIN</a></p>
+              </div>
+              <div class="container col-md-2 col-md-offset-2"></div>
+          </div>
+      </div>
   </footer>
   <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
   <script>

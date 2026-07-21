@@ -32,15 +32,13 @@ const resources = {
  * @return {string} language code
  */
 const getLanguagePreference = () => {
-  // Check for language cookie first (persists across session regeneration)
   const cookieMatch = document.cookie.match(/(?:^|; )loris_language=([^;]*)/);
   if (cookieMatch) {
-    return cookieMatch[1];
+    return decodeURIComponent(cookieMatch[1]);
   }
-  // Fall back to langpref from PHP
-  return loris.user.langpref ?? 'en';
-};
 
+  return window.loris?.user?.langpref ?? 'en';
+};
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
