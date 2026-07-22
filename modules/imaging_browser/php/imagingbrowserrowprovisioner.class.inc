@@ -204,6 +204,11 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $PendingNewquery as pending,
               s.CenterID as CenterID,
               c.Entity_type as entityType,
+              c.test_language AS Test_language,
+              s.Age_At_MRI AS Age_At_MRI_Months,
+              handedness_data.interpretation AS Handedness_Interpretation,
+              handedness_data.result AS Handedness_Score,
+              handedness_data.CommentID AS Handedness_CommentID,
               $modalities_subquery
               s.ProjectID
             FROM psc AS p
@@ -215,6 +220,12 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               LEFT JOIN mri_scan_type mst ON
                 (f.MriScanTypeID=mst.MriScanTypeID)
               $left_joins
+              LEFT JOIN (
+                SELECT f2.SessionID, h2.interpretation, h2.result, h2.CommentID
+                FROM flag f2
+                JOIN handedness h2 ON (h2.CommentID = f2.CommentID)
+                WHERE f2.Test_name = 'handedness'
+              ) AS handedness_data ON (handedness_data.SessionID = s.ID)
             WHERE
               s.Active = 'Y' AND
               f.FileType IN ('mnc', 'nii')
@@ -247,3 +258,4 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         return new ImagingBrowserRow($row, $cid, $pid);
     }
 }
+

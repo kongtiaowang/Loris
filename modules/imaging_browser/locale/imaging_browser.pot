@@ -122,6 +122,18 @@ msgstr ""
 msgid "QC Pending"
 msgstr ""
 
+msgid "Test Language"
+msgstr ""
+
+msgid "Handedness Score"
+msgstr ""
+
+msgid "Handedness Interpretation"
+msgstr ""
+
+msgid "Age At MRI in Month"
+msgstr ""
+
 msgid "Output Type"
 msgstr ""
 

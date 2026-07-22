@@ -1,0 +1,136 @@
+table, th, td {
+  padding: 7px;
+}
+
+th, td {
+  padding: 7px;
+}
+
+ul {
+  margin-bottom: 0;
+}
+
+.checkbox label {
+  display: inline-block;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.checkbox input {
+  vertical-align: middle;
+}
+
+span.help-block.text-danger {
+  font-weight: bold;
+}
+
+.checkbox label span {
+  vertical-align: middle;
+}
+
+#main-panel {
+  padding: 0px;
+}
+
+#main-panel > div.panel-heading {
+  text-align: center;
+  padding: 15px;
+}
+
+#main-panel > div.panel-body {
+  padding: 45px;
+}
+
+div.text-preface {
+  padding-bottom: 26px;
+}
+
+div.text-preface > * {
+  text-align: center;
+}
+
+div.panel-body > div.well {
+  text-align: center;
+}
+
+div.form-group.text-input {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  vertical-align: center;
+}
+
+div.form-group.checkbox-input {
+  display: flex;
+  vertical-align: middle;
+}
+
+div.form-group.checkbox-input > label {
+  text-align: right;
+  margin-bottom: 0px;
+}
+
+div.form-group.checkbox-input > input {
+  width: 20px;
+  margin-top: 0px;
+}
+
+input[type="text"] {
+  text-align: center;
+}
+
+.checkbox-input-description > h4 {
+  text-align: center;
+}
+
+div.hr-divider {
+  display: block;
+}
+
+div.text-input > span:last-child {
+  text-align: center;
+  font-weight: bolder;
+  margin-bottom: 5px;
+}
+
+div.checkbox-group > div.container > span:last-child {
+  text-align: center;
+  font-weight: bolder;
+  display: block;
+}
+
+hr {
+  border: 1px solid darkgray;
+  width: 75%;
+  margin: 0 auto;
+}
+
+div.checkbox-group > div.container > div.checkbox {
+  text-align: left;
+  vertical-align: middle;
+}
+
+div.checkbox-group > div.container > div.checkbox > label {
+  display: block;
+}
+
+div.checkbox-group > div.container > div.checkbox > label > input[type="checkbox"] {
+  display: block;
+}
+
+div.checkbox-group > div.container > h4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"]:focus::placeholder {
+  color: transparent;
+}
+
+#helpBlockCaptcha {
+  margin-top: 30px;
+  display: block;
+  font-weight: bold;
+  text-align: center;
+}
+

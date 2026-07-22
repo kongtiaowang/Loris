@@ -30,7 +30,7 @@ const lorisModules: Record<string, string[]> = {
   candidate_list: ['openProfileForm', 'candidateListIndex'],
   datadict: ['dataDictIndex'],
   dataquery: ['index'],
-  data_release: ['dataReleaseIndex'],
+  //data_release: ['dataReleaseIndex'],
   dictionary: ['dataDictIndex'],
   dqt: [
     'components/expansionpanels',
@@ -80,7 +80,7 @@ const lorisModules: Record<string, string[]> = {
   candidate_profile: ['CandidateInfo'],
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
-  dashboard: ['welcome'],
+  //dashboard: ['welcome'],
   my_preferences: ['mfa'],
 };
 

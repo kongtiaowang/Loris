@@ -144,6 +144,13 @@ class Imaging_Browser extends \DataFrameworkMenu
             'Scanner' => dgettext("imaging_browser", "Scanner"),
         ];
 
+        // get the list of language options matching candidate.test_language enum
+        $language_options = [
+            'English'      => 'English',
+            'French'       => 'French',
+            'not_answered' => 'not_answered',
+        ];
+
         return [
             'sites'         => $siteList,
             'projects'      => $list_of_projects,
@@ -152,6 +159,7 @@ class Imaging_Browser extends \DataFrameworkMenu
             'pendingNew'    => $pending,
             'configLabels'  => $toTable_scan_types,
             'entityType'    => $entityType,
+            'test_language' => $language_options,
         ];
 
     }

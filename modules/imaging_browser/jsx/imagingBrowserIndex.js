@@ -107,6 +107,19 @@ class ImagingBrowserIndex extends Component {
       </a>);
       result = (<td>{cellLinks}</td>);
       break;
+    case t('Handedness Interpretation', {ns: 'imaging_browser'}):
+      if (cell) {
+        const commentID = row[t('Handedness CommentID', {ns: 'imaging_browser'})];
+        const dccid = row[t('DCCID', {ns: 'loris'})];
+        result = (
+          <td>
+            <a href={`${loris.BaseURL}/instruments/handedness/?commentID=${commentID}&sessionID=${sessionID}&candID=${dccid}`}>
+              {cell}
+            </a>
+          </td>
+        );
+      }
+      break;
     }
 
     return result;
@@ -151,10 +164,11 @@ class ImagingBrowserIndex extends Component {
         name: 'DCCID',
         type: 'text',
       }},
-      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: false, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,
+	hide: true,      
       }},
       {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
@@ -166,7 +180,7 @@ class ImagingBrowserIndex extends Component {
           type: 'select',
           options: options.visitQCStatus,
         }},
-      {label: t('First Acquisition', {ns: 'imaging_browser'}), show: true},
+      {label: t('First Acquisition', {ns: 'imaging_browser'}), show: false},
       {label: t('First Insertion', {ns: 'imaging_browser'}), show: true},
       {label: t('Last QC', {ns: 'imaging_browser'}), show: true},
       {label: t('New Data', {ns: 'imaging_browser'}), show: true},
@@ -190,6 +204,33 @@ class ImagingBrowserIndex extends Component {
           type: 'multiselect',
           options: options.entityType,
         }},
+      {label: t('Test Language', {ns: 'imaging_browser'}),
+        show: true, filter: {
+          name: 'test_language',
+          type: 'select',
+          options: options.test_language,
+        }},
+      {label: t('Age At MRI in Month', {ns: 'imaging_browser'}),
+        show: true, filter: {
+          name: 'ageAtMRIMonths',
+          type: 'text',
+        }},
+      {label: t('Handedness Interpretation', {ns: 'imaging_browser'}),
+        show: true, filter: {
+          name: 'handednessInterpretation',
+          type: 'select',
+          options: {
+            'Ambidextrous': 'Ambidextrous',
+            'Left-handed': 'Left-handed',
+            'Right-handed': 'Right-handed',
+          },
+        }},
+      {label: t('Handedness Score', {ns: 'imaging_browser'}),
+        show: true, filter: {
+          name: 'handednessScore',
+          type: 'text',
+        }},
+      {label: t('Handedness CommentID', {ns: 'imaging_browser'}), show: false},
     ];
     /**
      * Adding columns based on the Imaging Browser Tabulated Scan Types
@@ -233,3 +274,4 @@ window.addEventListener('load', () => {
     />
   );
 });
+

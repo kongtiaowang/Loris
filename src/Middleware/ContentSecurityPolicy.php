@@ -60,7 +60,8 @@ class ContentSecurityPolicy implements MiddlewareChainer
             "default-src 'self' 'unsafe-inline'; "
             . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
             . "font-src 'self' data:; "
-            . "img-src 'self' https://images.loris.ca data:; "
+	    . "img-src 'self' https://images.loris.ca data:; "
+	    . "frame-src 'self' https://www.google.com https://www.gstatic.com; "
             . "frame-ancestors 'none'; "
             . "form-action 'self'; "
             . $config_additions
