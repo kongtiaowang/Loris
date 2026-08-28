@@ -378,6 +378,7 @@ class Edit_User extends \NDB_Form
         }
         // update the user
         if ($this->isCreatingNewUser()) {
+            $set['account_request_date'] = date('Y-m-d');
             // insert a new user
             \User::insert($set);
             $user = \User::factory($set['UserID']);
@@ -824,7 +825,6 @@ class Edit_User extends \NDB_Form
                 dgettext("user_accounts", "FAX")
             );
         }
-
         // email address
         $this->addBasicText(
             'Email',
