@@ -11,6 +11,7 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent 
   sleep 1
 done
 
+
 if [ -v SELENIUM_REQUIRED ]; 
 then
   echo "Waiting for Selenium..."
