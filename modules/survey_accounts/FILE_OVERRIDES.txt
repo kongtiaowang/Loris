@@ -1,0 +1,15 @@
+List of all files which contain overrides.
+
+- ajax
+    - GetAvailableSurveys.php (NEW FILE)
+    - ValidateEmailSubmitInput.php
+- help
+    - survey_accounts.md
+- js
+    - survey_accounts_helper.js
+- jsx
+    - surveyAccountsIndex.js
+- php
+    - addsurvey.class.inc
+    - surveyaccountsprovisioner.class.inc
+- test (NOT UPDATED WITH IBIS CHANGES)
