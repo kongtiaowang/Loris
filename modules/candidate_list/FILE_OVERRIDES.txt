@@ -1,0 +1,8 @@
+List of all files which contain overrides.
+
+- php
+    - candidatelistrowprovisioner.class.inc
+
+- jsx
+    // override from HBCD
+    - accesswidget.js
