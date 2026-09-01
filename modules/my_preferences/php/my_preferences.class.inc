@@ -165,18 +165,37 @@ class My_Preferences extends \NDB_Form
             }
         }
         // END NOTIFICATIONS UPDATE
+        // 1. Explicitly define allowed fields (whitelist)
+        $allowedKeys = array(
+            'First_name',
+            'Last_name',
+            'Email',
+            'Degree',
+            'Institution',
+            'Address',
+            'City',
+            'State',
+            'Zip_code',
+            'Country',
+            'Fax',
+            'language_preference',
+        );
+
         $set = array();
-        foreach ($values as $key => $value) {
-            // Password updates are handled separately. Password_hash is removed
-            // from the initial update as otherwise it will be recorded in the
-            // history table unencrypted.
-            if (!empty($value) && $key != 'Password_hash') {
-                $set[$key] = $value;
-            } else {
-                $set[$key] = null;
+
+        // 2. Extract strictly from whitelist rather than iterating over incoming keys
+        foreach ($allowedKeys as $key) {
+            if (array_key_exists($key, $values)) {
+                $val = $values[$key];
+                if (!empty($val)) {
+                    $set[$key] = $val;
+                } else {
+                    $set[$key] = null;
+                }
             }
         }
-        // update the user
+
+        // 3. Update the user securely
         $user->update($set);
 
         // Now set the password. Note that this field is named incorrectly at this
@@ -464,4 +483,5 @@ class My_Preferences extends \NDB_Form
         return null;
     }
 }
+
 
