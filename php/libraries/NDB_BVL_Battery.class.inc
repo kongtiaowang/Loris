@@ -135,13 +135,6 @@ class NDB_BVL_Battery
             );
         }
 
-        // assert that the current battery is empty
-        if (count($currentTests) > 0) {
-            throw new Exception(
-                "Battery is not empty - will not clobber an existing battery."
-            );
-        }
-
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery(
             $this->age,
@@ -152,12 +145,33 @@ class NDB_BVL_Battery
             $firstVisit
         );
 
+        // assert that the current battery is empty
+        if (count($currentTests) > 0) {
+            $neededTests = $this->getBatteryDifference($currentTests, $neededTests);
+        }
+
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
             $this->addInstrument($testName);
         } // end looping over the list of instruments
     } // end createBattery()
+
+    /**
+     * Computes the difference between the existing battery and the
+     * theoretical battery and returns only the missing tests as an array
+     *
+     * @param array $currentBattery Existing battery at the specified timepoint
+     * @param array $lookupBattery  Theoretical battery from the test_battery table
+     *
+     * @return array
+     */
+    function getBatteryDifference(
+        array $currentBattery=[],
+        array $lookupBattery=[]
+    ) : array {
+        return array_unique(array_diff($lookupBattery, $currentBattery));
+    }
 
     /**
      * Adds the specified instrument to the current battery, so long
@@ -193,11 +207,19 @@ class NDB_BVL_Battery
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
 
+        // generate the double data entry commentid
+        $ddeCommentID = 'DDE_'.$commentID;
+
         // instantiate instrument object to get table name attribute
         $obj = NDB_BVL_Instrument::factory($testName, '', '');
 
-        // insert into the test table
-        $DB->insert($obj->table, array('CommentID' => $commentID));
+        if ($obj->usesJSONdata() !== true) {
+            // insert into the test table
+            $DB->insert($obj->table, array('CommentID' => $commentID));
+
+            // insert the dde into the test table
+            $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
+        }
 
         // insert into the flag table
         $DB->insert(
@@ -209,12 +231,6 @@ class NDB_BVL_Battery
                 'UserID'    => $sessionData['UserID'],
             )
         );
-
-        // generate the double data entry commentid
-        $ddeCommentID = 'DDE_'.$commentID;
-
-        // insert the dde into the test table
-        $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
         $DB->insert(
@@ -243,10 +259,10 @@ class NDB_BVL_Battery
     function removeInstrument($testName)
     {
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // assert that the instrument is valid
-        $error = $this->_assertValidInstrument($testName);
+        $this->_assertValidInstrument($testName);
     }
 
     /**
@@ -544,10 +560,10 @@ class NDB_BVL_Battery
     function _createCommentID($testName)
     {
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // assert that the instrument is valid
-        $error = $this->_assertValidInstrument($testName);
+        $this->_assertValidInstrument($testName);
         return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
     }
 

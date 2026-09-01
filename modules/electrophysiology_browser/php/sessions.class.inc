@@ -46,14 +46,10 @@ class Sessions extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        //return (($user->hasPermission('electrophysiology_browser_view_allsites')
-        //        || ($user->hasCenter($this->timepoint->getCenterID())
-        //        && $user->hasPermission('electrophysiology_browser_view_site'))
-        //    ) && $user->hasProject($this->timepoint->getProject()->getId()));
-
-	return ($user->hasPermission('electrophysiology_browser_view_allsites')
+        return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
-                && $user->hasPermission('electrophysiology_browser_view_site')));
+                && $user->hasPermission('electrophysiology_browser_view_site'))
+            ) && $user->hasProject($this->timepoint->getProject()->getId()));
     }
 
     /**
