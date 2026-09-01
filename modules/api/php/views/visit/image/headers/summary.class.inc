@@ -74,15 +74,31 @@ class Summary
      */
     private function _formatMeta(): array
     {
-        $candid     = $this->_visit->getCandID();
-        $visitlabel = $this->_visit->getVisitLabel();
-        $filename   = $this->_image->getFileInfo()->getFilename();
+        $candid      = $this->_visit->getCandID();
+        $visitlabel  = $this->_visit->getVisitLabel();
+        $filename    = $this->_image->getFileInfo()->getFilename();
 
-        return array(
+        $arr = array(
             'CandID' => $candid,
             'Visit'  => $visitlabel,
             'File'   => $filename,
         );
+
+        if (ends_with($filename, 'nii') or ends_with($filename, 'nii.gz')) {
+            $bids_subdir = basename($this->_image->getFileInfo()->getPath());
+            $arr['BIDS_subdir'] = $bids_subdir;
+        }
+        if ($this->_image->getJsonFileInfo()->isFile()) {
+            $arr['JSON_file_link'] =  "/candidates/$candid/$visitlabel/images/$filename/bidsfiles/json";
+        }
+        if ($this->_image->getBvalFileInfo()->isFile()) {
+            $arr['bval_file_link'] =  "/candidates/$candid/$visitlabel/images/$filename/bidsfiles/bval";
+        }
+        if ($this->_image->getBvecFileInfo()->isFile()) {
+            $arr['bvec_file_link'] =  "/candidates/$candid/$visitlabel/images/$filename/bidsfiles/bvec";
+        }
+
+        return $arr;
     }
 
     /**

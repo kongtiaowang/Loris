@@ -82,6 +82,61 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
+     * Check if the current user has data entry permission for this instrument
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return bool True if user has permission, false otherwise
+     */
+    private function _hasDataEntryPermission(ServerRequestInterface $request) : bool
+    {
+        $user = $request->getAttribute('user');
+        
+        // If no user is authenticated, deny access
+        if ($user === null || $user instanceof \LORIS\AnonymousUser) {
+            return false;
+        }
+
+        // Check if the user has the global data_entry permission
+        if (!$user->hasPermission('data_entry')) {
+            return false;
+        }
+
+        // Check if the user has access to the candidate's center
+        $candID = $this->_visit->getCandID();
+        try {
+            $candidate = \Candidate::singleton($candID);
+            if ($candidate === null) {
+                return false;
+            }
+        } catch (\Exception $e) {
+            error_log("Failed to load candidate $candID: " . $e->getMessage());
+            return false;
+        }
+
+        // Get the registration center ID and project ID from the candidate
+        $centerID = $candidate->getCenterID();
+        $projectID = $candidate->getProjectID();
+
+        // Check center permission
+        if (!$user->hasCenter($centerID)) {
+            return false;
+        }
+
+        // Check project permission if project permissions are enabled
+        $config = \NDB_Config::singleton();
+        $useProjectPermissions = $config->getSetting('useProjectPermissions');
+        
+        if ($useProjectPermissions === 'true' || $useProjectPermissions === '1') {
+            if (!$user->hasProject($projectID)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Handles a request that starts with /candidates/$candid
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -100,6 +155,13 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $handler->process(
                 $request,
                 $handler
+            );
+        }
+
+        // Check data entry permission for all instrument operations
+        if (!$this->_hasDataEntryPermission($request)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'You do not have data entry permission for this instrument.'
             );
         }
 
@@ -152,8 +214,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -171,7 +231,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $instrumentname = $this->_instrument->testName;
             $this->_instrument->clearInstrument();
-            $this->_instrument->_save($data[$instrumentname]);
+            $this->_instrument->_saveValues($data[$instrumentname]);
+            $this->_instrument->score();
+            $this->_instrument->updateDataEntryCompletionStatus();
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
@@ -190,8 +252,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -208,7 +268,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $instrumentname = $this->_instrument->testName;
-            $this->_instrument->_save($data[$instrumentname]);
+            $this->_instrument->_saveValues($data[$instrumentname]);
+            $this->_instrument->score();
+            $this->_instrument->updateDataEntryCompletionStatus();
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
@@ -229,4 +291,3 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return md5($this->_instrument->toJSON());
     }
 }
-

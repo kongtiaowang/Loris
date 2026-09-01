@@ -140,12 +140,11 @@ class FeedbackMRI
         $DB =& Database::singleton();
 
         // start building the query
+	$where = $this->_buildWhere();
         $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
-                      FROM feedback_mri_comments
-                  WHERE ".$this->_buildWhere();
-
-        $result = $DB->pselect($query, array());
-
+          FROM feedback_mri_comments
+          WHERE {$where['sql']}";
+        $result = $DB->pselect($query, $where['params']);
         $comments = array();
         // build the output array
         if (is_array($result)) {
@@ -454,19 +453,25 @@ class FeedbackMRI
      * Constructs an appropriate where expression to limit selects to the
      * current object
      *
-     * @return string where string to limit selects to current object
+     * @return array where array to limit selects to current object
      * @access private
      */
-    function _buildWhere(): string
+    function _buildWhere(): array
     {
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
             // per-volume
-            return "FileID='$this->fileID'";
-        } else {
+           return [
+                'sql' => 'FileID = :fileID',
+                'params' => ['fileID' => $this->fileID]
+             ];
+	} else {
             // per-visit
-            return "SessionID='$this->sessionID'";
-        }
+            return [
+                'sql' => 'SessionID = :sessionID',
+                'params' => ['sessionID' => $this->sessionID]
+            ];
+	}
     }
 
     /**

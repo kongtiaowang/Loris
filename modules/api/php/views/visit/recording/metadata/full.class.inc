@@ -66,6 +66,9 @@ class Full
         unset($data['json_file']);
         unset($data['physiological_json_file_blake2b_hash']);
         unset($data['physiological_file_blake2b_hash']);
+        unset($data['scans_tsv_file']);
+        unset($data['physiological_scans_tsv_file_bake2hash']);
+        unset($data['electrophyiology_chunked_dataset_path']);
 
         return  array(
             'Meta' => $this->_formatMeta(),

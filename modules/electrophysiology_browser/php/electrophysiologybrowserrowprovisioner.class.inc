@@ -48,6 +48,7 @@ class ElectrophysiologyBrowserRowProvisioner
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
+              GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Type,
               s.ID                                      AS SessionID,
               s.CenterID                                AS CenterID,
               s.ProjectID                               AS ProjectID
@@ -64,7 +65,7 @@ class ElectrophysiologyBrowserRowProvisioner
                 SELECT type FROM ImagingFileTypes WHERE Description LIKE '%(EEG)'
               )
             GROUP BY SessionID",
-            array()
+            []
         );
     }
 
@@ -79,6 +80,7 @@ class ElectrophysiologyBrowserRowProvisioner
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
         $cid = (int )$row['CenterID'];
+        //$pid = new \ProjectID($row['ProjectID']);
         $pid = (int )$row['ProjectID'];
         unset($row['CenterID']);
         unset($row['ProjectID']);

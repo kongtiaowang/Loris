@@ -58,7 +58,7 @@ class Image
                        s.CenterID as centerid,
                        c.Entity_type as entitytype
                      FROM
-                       files f 
+                       files f
                      LEFT JOIN session s
                        ON (f.SessionID = s.ID)
                      LEFT JOIN candidate c
@@ -100,7 +100,7 @@ class Image
                        SELECT
                          Value
                        FROM
-                         parameter_file pf 
+                         parameter_file pf
                        JOIN parameter_type pt
                          USING (ParameterTypeID)
                        JOIN files f
@@ -132,7 +132,7 @@ class Image
                          pt.Name as name,
                          pf.Value as value
                        FROM
-                         parameter_file pf 
+                         parameter_file pf
                        JOIN parameter_type pt
                          USING (ParameterTypeID)
                        JOIN files f
@@ -244,6 +244,60 @@ class Image
     }
 
     /**
+     * Return a SPLFileInfo object based on this json's file's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getJsonFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->getHeader('bids_json_file');
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this bval's file's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getBvalFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->getHeader('bids_bval_file');
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this bvec's file's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getBvecFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->getHeader('bids_bvec_file');
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
      * Return a SPLFileInfo object based on this images's properties.
      *
      * @return \SplFileInfo
@@ -272,7 +326,7 @@ class Image
             ->config()
             ->getSetting('imagePath');
 
-        $fullpath = $imagepath . '/pic/'. $this->getHeader('check_pic_filename');
+        $fullpath = $imagepath . '/pic/' . $this->getHeader('check_pic_filename');
 
         $info = new \SplFileInfo($fullpath);
 
@@ -298,3 +352,4 @@ class Image
         );
     }
 }
+

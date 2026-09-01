@@ -49,7 +49,7 @@ class Recording
                 ->database()
                 ->pselectRow(
                     '
-                     SELECT
+                    SELECT
                        f.FilePath               as filelocation,
                        pot.OutputTypeName       as outputtype,
                        pm.PhysiologicalModality as acquisitionmodality,
@@ -59,9 +59,10 @@ class Recording
                        pc.FilePath              as channel_file_path,
                        pe.FilePath              as electrode_file_path,
                        pte.FilePath             as event_file_path,
+                       ppf.Value                as json_file_path,
                        pa.FilePath              as archive_file_path
                      FROM
-                       physiological_file f 
+                       physiological_file f
                      LEFT JOIN session s
                        ON (f.SessionID = s.ID)
                      LEFT JOIN candidate c
@@ -77,21 +78,28 @@ class Recording
                      LEFT JOIN (
                        SELECT PhysiologicalFileID, FilePath
                        FROM physiological_channel
-                       LIMIT 1
+                       GROUP BY (PhysiologicalFileID)
                      ) pc
                        ON (pc.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
                        SELECT PhysiologicalFileID, FilePath
                        FROM physiological_electrode
-                       LIMIT 1
+                       GROUP BY (PhysiologicalFileID)
                      ) pe
                        ON (pe.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
                        SELECT PhysiologicalFileID, FilePath
                        FROM physiological_task_event
-                       LIMIT 1
+                       GROUP BY (PhysiologicalFileID)
                      ) pte
                        ON (pte.PhysiologicalFileID = f.PhysiologicalFileID)
+                     LEFT JOIN (
+                         SELECT PhysiologicalFileID, Value
+                         FROM physiological_parameter_file pf
+                         JOIN parameter_type pt ON (pf.ParameterTypeID=pt.ParameterTypeID)
+                         WHERE pt.Name= "json_file"
+                     ) ppf
+                       ON (ppf.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN physiological_archive pa
                        ON (pa.PhysiologicalFileID = f.PhysiologicalFileID)
                      WHERE f.PhysiologicalFileID = :v_fileid
@@ -113,6 +121,7 @@ class Recording
             $this->_electrode_file_path = $dbrow['electrode_file_path'];
             $this->_event_file_path     = $dbrow['event_file_path'];
             $this->_archive_file_path   = $dbrow['archive_file_path'];
+            $this->_json_file_path       = $dbrow['json_file_path'];
         }
     }
 
@@ -135,7 +144,7 @@ class Recording
                          physiological_parameter_file
                        WHERE
                          ParameterTypeID = (
-                           SELECT ParameterTypeID 
+                           SELECT ParameterTypeID
                            FROM parameter_type
                            WHERE Name = :v_headername
                          )
@@ -165,7 +174,7 @@ class Recording
                          pt.Name as name,
                          pf.Value as value
                        FROM
-                         physiological_parameter_file pf 
+                         physiological_parameter_file pf
                        JOIN parameter_type pt
                          USING (ParameterTypeID)
                        WHERE
@@ -238,6 +247,24 @@ class Recording
     }
 
     /**
+     * Return a SPLFileInfo object based on this json's file's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getJsonFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->_json_file_path;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
      * Return a SPLFileInfo object based on this events.class' file's properties.
      *
      * @return \SplFileInfo
@@ -301,10 +328,10 @@ class Recording
                          pc.Unit                as unit,
                          pc.FilePath            as filepath
                        FROM
-                         physiological_channel pc 
-                       JOIN physiological_channel_type pct
+                         physiological_channel pc
+                       LEFT JOIN physiological_channel_type pct
                          USING (PhysiologicalChannelTypeID)
-                       JOIN physiological_status_type pst
+                       LEFT JOIN physiological_status_type pst
                          USING (PhysiologicalStatusTypeID)
                        WHERE
                          pc.PhysiologicalFileID = :v_fileid
@@ -342,10 +369,10 @@ class Recording
                          pe.Impedance           as Impedance,
                          pe.FilePath            as filepath
                        FROM
-                         physiological_electrode pe 
-                       JOIN physiological_electrode_type pet
+                         physiological_electrode pe
+                       LEFT JOIN physiological_electrode_type pet
                          USING (PhysiologicalElectrodeTypeID)
-                       JOIN physiological_electrode_material pem
+                       LEFT JOIN physiological_electrode_material pem
                          USING (PhysiologicalElectrodeMaterialID)
                        WHERE
                          pe.PhysiologicalFileID = :v_fileid
@@ -383,7 +410,7 @@ class Recording
                          pte.ResponseTime as responsetime,
                          pte.FilePath     as filepath
                        FROM
-                         physiological_task_event pte 
+                         physiological_task_event pte
                        WHERE
                          pte.PhysiologicalFileID = :v_fileid
                       ',

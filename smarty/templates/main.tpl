@@ -11,9 +11,8 @@
            variables to be instantiated, so that other js files don't need access to smarty variables
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
-        <script language="javascript" type="text/javascript">
-        let loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
-        </script>
+        <script src="{$baseurl}/js/loris-helper.js" type="text/javascript"></script>
+
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
         {/section}

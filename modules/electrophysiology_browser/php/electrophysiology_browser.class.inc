@@ -74,8 +74,12 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
     function getFieldOptions(): array
     {
         // create user object
-        $user          = \NDB_Factory::singleton()->user();
-        $list_of_sites = array();
+        $factory = \NDB_Factory::singleton();
+//        $user    = $factory->user();
+        $db      = $factory->database();
+	$user    = \NDB_Factory::singleton()->user();
+
+        $list_of_sites = [];
 
         // grep the sites available to the user
         if ($user->hasPermission('electrophysiology_browser_view_allsites')) {
@@ -95,17 +99,28 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         }
 
         // get list of projects
-        $list_of_projects = array();
+        $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
         foreach ($projectList as $key => $project) {
             unset($projectList[$key]);
             $list_of_projects[$project] = $project;
         }
 
-        return array(
+        // get list of types
+        $list_of_types = [];
+        $typeList      = $db->pselect(
+            "SELECT OutputTypeName FROM physiological_output_type",
+            []
+        );
+        foreach ($typeList as $row) {
+            $list_of_types[$row['OutputTypeName']] = ucfirst($row['OutputTypeName']);
+        }
+
+        return [
             'sites'    => $list_of_sites,
             'projects' => $list_of_projects,
-        );
+            'types'    => $list_of_types
+        ];
 
     }
 
@@ -134,10 +149,10 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         $baseURL = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array(
+            [
                 $baseURL
                 . '/electrophysiology_browser/js/electrophysiologyBrowserIndex.js',
-            )
+            ]
         );
     }
 
