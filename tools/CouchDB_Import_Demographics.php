@@ -20,6 +20,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'Date of Death',
             'Type' => 'date'
         ),
+        'age_at_scan' => array(
+            'Description' => 'Age at time of scan (years)',
+            'Type' => 'decimal(8,2)'
+        ),
         'CandID' => array(
             'Description' => 'DCC Candidate Identifier',
             'Type' => 'varchar(255)'
@@ -148,7 +152,7 @@ class CouchDBDemographicsImporter {
                                 COALESCE(pso.Description,'Active') as Status, 
                                 ps.participant_suboptions as Status_reason, 
                                 ps.reason_specify as Status_comments, 
-                                GROUP_CONCAT(fbe.Comment) as session_feedback";
+                                GROUP_CONCAT(fbe.Comment) as session_feedback, aas.age_at_scan";
         $tablesToJoin = " FROM session s 
                                 JOIN candidate c USING (CandID) 
                                 LEFT JOIN psc p ON (p.CenterID=s.CenterID) 
@@ -157,7 +161,8 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) 
                                 LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                                 LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
-                                LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
+				LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)
+                                LEFT JOIN age_at_scan aas ON (aas.PSCID=c.PSCID)";
         $groupBy=" GROUP BY s.ID, 
                             c.DoB,
                             c.CandID,
@@ -175,7 +180,8 @@ class CouchDBDemographicsImporter {
                             pc_comment.Value, 
                             pso.Description, 
                             ps.participant_suboptions, 
-                            ps.reason_specify";
+			    ps.reason_specify,
+                            aas.age_at_scan";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
