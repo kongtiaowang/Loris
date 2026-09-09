@@ -246,6 +246,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DB_DATABASE: LorisTest
+      DB_FRESH: LorisFresh
     steps:
     - uses: actions/checkout@v4
 
@@ -253,6 +254,7 @@ jobs:
       run: |
         sudo /etc/init.d/mysql start
         mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
+        mysql -e 'CREATE DATABASE ${{ env.DB_FRESH }};' -uroot -proot
 
     - name: Source SQL/0000-*.sql
       run: |
@@ -268,6 +270,42 @@ jobs:
           mysql ${{ env.DB_DATABASE }} -uroot -proot < $f 2> mysql.err || { cat mysql.err; exit 1; }
           if grep -q '^ERROR' mysql.err; then cat mysql.err; exit 1; fi
         done
+
+    # The base schema files are kept in sync with SQL/New_patches, so a
+    # database built from the 0000 files alone must be structurally identical
+    # to the one that also received every patch. Any drift means a patch was
+    # added without updating the base schema, or a base schema change has no
+    # matching patch.
+    - name: Compare patched schema with a fresh 0000-only install
+      run: |
+        for f in SQL/0000-*.sql; do
+          echo "Sourcing $f"
+          mysql ${{ env.DB_FRESH }} -uroot -proot < $f
+        done
+        mysql -N -B -uroot -proot > drift.txt <<EOF
+        SELECT CONCAT('only_in_patched: ', c.TABLE_NAME, '.', c.COLUMN_NAME)
+        FROM information_schema.columns c
+        WHERE c.TABLE_SCHEMA = '$DB_DATABASE'
+          AND NOT EXISTS (
+            SELECT 1 FROM information_schema.columns c2
+            WHERE c2.TABLE_SCHEMA = '$DB_FRESH'
+              AND c2.TABLE_NAME = c.TABLE_NAME
+              AND c2.COLUMN_NAME = c.COLUMN_NAME)
+        UNION ALL
+        SELECT CONCAT('only_in_fresh_install: ', c.TABLE_NAME, '.', c.COLUMN_NAME)
+        FROM information_schema.columns c
+        WHERE c.TABLE_SCHEMA = '$DB_FRESH'
+          AND NOT EXISTS (
+            SELECT 1 FROM information_schema.columns c2
+            WHERE c2.TABLE_SCHEMA = '$DB_DATABASE'
+              AND c2.TABLE_NAME = c.TABLE_NAME
+              AND c2.COLUMN_NAME = c.COLUMN_NAME);
+        EOF
+        if [ -s drift.txt ]; then
+          echo "Schema drift between SQL/0000-*.sql and SQL/New_patches found:"
+          cat drift.txt
+          exit 1
+        fi
 
     - name: Source SQL/9999-99-99-drop_tables.sql
       run: |
