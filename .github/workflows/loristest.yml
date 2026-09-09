@@ -234,6 +234,29 @@ jobs:
     - name: Check for extra language strings
       run: php tools/language_completion_check.php --extra
 
+  # Sources every base schema file starting with 0000 in SQL/
+  # (0000-00-00-schema.sql ... 0000-00-06-BiobankTables.sql) into a fresh
+  # database. mysql stops at the first error in batch mode, so any failing
+  # statement fails the job.
+  sqltest:
+    runs-on: ubuntu-latest
+    env:
+      DB_DATABASE: LorisTest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
+
+    - name: Source SQL/0000-*.sql
+      run: |
+        for f in SQL/0000-*.sql; do
+          echo "Sourcing $f"
+          mysql ${{ env.DB_DATABASE }} -uroot -proot < $f
+        done
+
   docker:
     runs-on: ubuntu-latest
     strategy:
