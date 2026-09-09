@@ -289,3 +289,7 @@ DROP TABLE IF EXISTS `project_cohort_rel`;
 DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
+
+-- 2026-08-12-bids-dataset-tables.sql (SQL/New_patches)
+DROP TABLE IF EXISTS `bids_file`;
+DROP TABLE IF EXISTS `bids_dataset`;

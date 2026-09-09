@@ -236,8 +236,12 @@ jobs:
 
   # Sources every base schema file starting with 0000 in SQL/
   # (0000-00-00-schema.sql ... 0000-00-06-BiobankTables.sql) into a fresh
-  # database. mysql stops at the first error in batch mode, so any failing
-  # statement fails the job.
+  # database, then applies every patch in SQL/New_patches in order, then runs
+  # the cleanup script SQL/9999-99-99-drop_tables.sql. mysql stops at the
+  # first error in batch mode, so any failing statement fails the job.
+  # Patches in SQL/New_patches must be guarded: the base schema files are
+  # kept in sync with them, so the patches must also be safe to apply to a
+  # database that already contains their changes.
   sqltest:
     runs-on: ubuntu-latest
     env:
@@ -256,6 +260,18 @@ jobs:
           echo "Sourcing $f"
           mysql ${{ env.DB_DATABASE }} -uroot -proot < $f
         done
+
+    - name: Apply SQL/New_patches/*.sql
+      run: |
+        for f in SQL/New_patches/*.sql; do
+          echo "Applying $f"
+          mysql ${{ env.DB_DATABASE }} -uroot -proot < $f 2> mysql.err || { cat mysql.err; exit 1; }
+          if grep -q '^ERROR' mysql.err; then cat mysql.err; exit 1; fi
+        done
+
+    - name: Source SQL/9999-99-99-drop_tables.sql
+      run: |
+        mysql ${{ env.DB_DATABASE }} -uroot -proot < SQL/9999-99-99-drop_tables.sql
 
   docker:
     runs-on: ubuntu-latest
