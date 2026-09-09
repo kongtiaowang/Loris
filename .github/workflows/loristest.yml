@@ -4,7 +4,6 @@ on:
   - push
   - pull_request
 
-
 jobs:
   buildjs:
     env:
@@ -17,19 +16,14 @@ jobs:
         run: npm install -g protoc-gen-js
 
       - name: Install EEG package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
         run: |
-          sudo apt-get update 
-          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
-             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y imagemagick libprotobuf-dev protobuf-compiler
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
           protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
       - name: Install other package dependencies
-        run: sudo apt install -y gettext
+        run: sudo apt-get install -y gettext
 
       - name: Install npm modules
         run: npm ci
@@ -75,12 +69,12 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Cache Composer packages
+      - name: Get Composer Cache Directory
         id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Composer cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -121,7 +115,7 @@ jobs:
 
     # Cache node_modules to avoid downloading dependencies if already cached
     - name: Cache node_modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -140,7 +134,6 @@ jobs:
       with:
         name: vendor-php${{matrix.php}}
         path: .
-
 
     - name: Extract compiled JS
       run: tar xfvz lorisjs.tar.gz
@@ -180,12 +173,13 @@ jobs:
         mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
         find raisinbread/instruments/instrument_sql -name *.sql -not -name 9999-99-99-drop_instrument_tables.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
         find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+
     - name: Source instrument schemas
       run: |
         find raisinbread/instruments/instrument_sql -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
         echo Sourcing test/test_instrument/testtest.sql
         mysql ${{ env.DB_DATABASE}} -uroot -proot < test/test_instrument/testtest.sql
- 
+
     - name: Set LORIS base path
       run: |
         echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\)
@@ -202,13 +196,12 @@ jobs:
 
     - name: Test server
       run: |
-           sleep 1
-           curl -v http://localhost:8000
-
+        sleep 1
+        curl -v http://localhost:8000
 
     - name: Run Test Suite
       run: |
-          vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisAPITests --group api-${{ matrix.apiversion }}
+        vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisAPITests --group api-${{ matrix.apiversion }}
 
     - name: Print Error Logs
       if: always()
@@ -234,14 +227,6 @@ jobs:
     - name: Check for extra language strings
       run: php tools/language_completion_check.php --extra
 
-  # Sources every base schema file starting with 0000 in SQL/
-  # (0000-00-00-schema.sql ... 0000-00-06-BiobankTables.sql) into a fresh
-  # database, then applies every patch in SQL/New_patches in order, then runs
-  # the cleanup script SQL/9999-99-99-drop_tables.sql. mysql stops at the
-  # first error in batch mode, so any failing statement fails the job.
-  # Patches in SQL/New_patches must be guarded: the base schema files are
-  # kept in sync with them, so the patches must also be safe to apply to a
-  # database that already contains their changes.
   sqltest:
     runs-on: ubuntu-latest
     env:
@@ -271,11 +256,6 @@ jobs:
           if grep -q '^ERROR' mysql.err; then cat mysql.err; exit 1; fi
         done
 
-    # The base schema files are kept in sync with SQL/New_patches, so a
-    # database built from the 0000 files alone must be structurally identical
-    # to the one that also received every patch. Any drift means a patch was
-    # added without updating the base schema, or a base schema change has no
-    # matching patch.
     - name: Compare patched schema with a fresh 0000-only install
       run: |
         for f in SQL/0000-*.sql; do
@@ -300,7 +280,7 @@ jobs:
             WHERE c2.TABLE_SCHEMA = '$DB_DATABASE'
               AND c2.TABLE_NAME = c.TABLE_NAME
               AND c2.COLUMN_NAME = c.COLUMN_NAME);
-        EOF
+EOF
         if [ -s drift.txt ]; then
           echo "Schema drift between SQL/0000-*.sql and SQL/New_patches found:"
           cat drift.txt
@@ -314,24 +294,22 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     strategy:
-        fail-fast: false
-        matrix:
-            testsuite: ['integration']
-            php: ['8.4', '8.5']
-            ci_node_index: [0,1,2,3]
+      fail-fast: false
+      matrix:
+        testsuite: ['integration']
+        php: ['8.4', '8.5']
+        ci_node_index: [0, 1, 2, 3]
 
-            include:
-            # add a variable but do not display it in the job's name
-            - ci_node_total: 4
-
-            - testsuite: 'static'
-              php: '8.4'
-            - testsuite: 'unit'
-              php: '8.4'
-            - testsuite: 'static'
-              php: '8.5'
-            - testsuite: 'unit'
-              php: '8.5'
+        include:
+          - ci_node_total: 4
+          - testsuite: 'static'
+            php: '8.4'
+          - testsuite: 'unit'
+            php: '8.4'
+          - testsuite: 'static'
+            php: '8.5'
+          - testsuite: 'unit'
+            php: '8.5'
 
     steps:
     - uses: actions/checkout@v4
@@ -345,12 +323,12 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Cache Composer packages
+    - name: Get Composer Cache Directory
       id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Composer cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
@@ -363,14 +341,9 @@ jobs:
       run: npm install -g protoc-gen-js
 
     - name: Install package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
         sudo apt-get update
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
-           libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler gettext
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y imagemagick libprotobuf-dev protobuf-compiler gettext
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
@@ -383,12 +356,8 @@ jobs:
 
     - name: Run Test Suite
       run: |
-          # set sandbox to 1 before running the tests
-          # since some tests only run in sandbox environments
-          sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
-          npm run tests:${{ matrix.testsuite }}
+        sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
+        npm run tests:${{ matrix.testsuite }}
       env:
-          # Specifies how many jobs you would like to run in parallel,
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          # Use the index from matrix as an environment variable
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+        CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+        CI_NODE_INDEX: ${{ matrix.ci_node_index }}
