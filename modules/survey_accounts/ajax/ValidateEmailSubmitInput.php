@@ -17,7 +17,7 @@ if (!$user->hasPermission('user_accounts')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
-
+header("Content-Type: application/json; charset=utf-8");
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
