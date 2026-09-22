@@ -28,6 +28,23 @@ $file     = html_entity_decode(basename($_GET['File']));
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
+// The media browser only lists files for the user's sites, but this endpoint
+// used to serve any file by name. Check the site of the session the file
+// belongs to unless the user can access all profiles.
+$row = \Database::singleton()->pselectRow(
+    "SELECT s.CenterID
+     FROM media m
+     JOIN session s ON m.session_id = s.ID
+     WHERE m.file_name = :file",
+    ['file' => $file]
+);
+if (!$row
+    || (!$user->hasPermission('access_all_profiles')
+        && !$user->hasCenter((int)$row['CenterID']))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
 
 $downloadNotifier = new NDB_Notifier(
     "media",
