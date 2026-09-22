@@ -289,14 +289,33 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * @return string the content of the page help.
      */
     public function getHelp(string $page): string
-    {
-        $helpFile = $this->dir . "/help/$page.md";
-        if (file_exists($helpFile)) {
-                return file_get_contents($helpFile);
+{
+        // Reject null bytes outright: PHP 7 truncates paths at them and PHP 8
+        // throws a ValueError out of realpath(), so deny before resolving.
+        if (strpos($page, "\0") !== false) {
+            return "No help available";
         }
-        return "No help available for $page ($helpFile)";
-    }
 
+        // Resolve the requested path and make sure it is still inside the
+        // module's help directory. Without this check $page can contain
+        // "../" sequences and be used to read arbitrary files on the server
+        // (CWE-552).
+        $helpDir  = realpath($this->dir);
+        $helpFile = realpath($this->dir . "/help/$page.md");
+
+        // strpos() is used instead of str_starts_with(), which requires PHP 8.
+        if ($helpFile !== false
+            && $helpDir !== false
+            && file_exists($helpFile)
+            && strpos($helpFile, $helpDir) === 0
+        ) {
+            return file_get_contents($helpFile);
+        }
+
+        // Do not echo $helpFile back to the caller: it is built from
+        // user supplied input and this response is rendered by the browser.
+        return "No help available for $page";
+    }
     /**
      * The default handler for a module routes to a page of the first component of
      * the URL's name, or the same name as the module if serving the root of the
