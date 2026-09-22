@@ -140,12 +140,18 @@ class FeedbackMRI
         $DB =& Database::singleton();
 
         // start building the query
-	$where = $this->_buildWhere();
+       // The id is bound as a parameter: it comes from the request
+        // (feedback_mri_popup.php passes $_REQUEST) and used to be interpolated
+        // straight into the SQL string, which allowed SQL injection.
+        $where = $this->objectType == 'volume'
+            ? "FileID=:FileID"
+            : "SessionID=:SessionID";
         $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
-          FROM feedback_mri_comments
-          WHERE {$where['sql']}";
-        $result = $DB->pselect($query, $where['params']);
-        $comments = array();
+                      FROM feedback_mri_comments
+                  WHERE $where";
+        $result = $DB->pselect($query, $this->_buildWhereAssoc());
+
+	$comments = array();
         // build the output array
         if (is_array($result)) {
             foreach ($result as $row) {
@@ -449,30 +455,6 @@ class FeedbackMRI
         return true;
     }
 
-    /**
-     * Constructs an appropriate where expression to limit selects to the
-     * current object
-     *
-     * @return array where array to limit selects to current object
-     * @access private
-     */
-    function _buildWhere(): array
-    {
-        // build the where depending on object and subject type
-        if ($this->objectType == 'volume') {
-            // per-volume
-           return [
-                'sql' => 'FileID = :fileID',
-                'params' => ['fileID' => $this->fileID]
-             ];
-	} else {
-            // per-visit
-            return [
-                'sql' => 'SessionID = :sessionID',
-                'params' => ['sessionID' => $this->sessionID]
-            ];
-	}
-    }
 
     /**
      * Constructs an associative array which can be used as a where
