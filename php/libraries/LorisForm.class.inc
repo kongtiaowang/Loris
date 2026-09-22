@@ -954,8 +954,12 @@ class LorisForm
 
             . (
                 (!empty($value) || $value === '0')
-                ? ' value="' . $this->getValue($el['name']) . '"'
-                : ''
+                ? ' value="' . htmlspecialchars(
+                    (string) $this->getValue($el['name']),
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) . '"'
+		: ''
               )
             . $disabled
             . ' '
@@ -1154,8 +1158,12 @@ class LorisForm
         $value = $this->getValue($el['name']);
         return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
             . (
-                !empty($value)
-                ? $this->getValue($el['name']) : ''
+		!empty($value)
+                ? htmlspecialchars(
+                    (string) $this->getValue($el['name']),
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) : ''		    
               )
             ."</textarea>";
     }

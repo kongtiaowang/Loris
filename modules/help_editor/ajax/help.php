@@ -11,7 +11,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-
+header('Content-Type: application/json; charset=utf-8');
 try {
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
