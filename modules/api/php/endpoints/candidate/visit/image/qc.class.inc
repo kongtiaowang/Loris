@@ -65,7 +65,8 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-            'GET',
+		'GET',
+		'PUT',
         );
     }
 
@@ -95,8 +96,9 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
-
-       case 'OPTIONS':
+        case 'PUT':
+            return $this->_handlePUT($request);
+        case 'OPTIONS':
             return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
 
@@ -130,7 +132,86 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         return $this->_cache;
     }
+    /**
+     * Handles a PUT request that replace an image qc status
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePUT(ServerRequestInterface $request): ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        $data = json_decode((string) $request->getBody(), true);
 
+        // Scan level QC flags are editable in the imaging browser only with the
+        // imaging_browser_qc permission. This endpoint used to skip that check
+        // (the visit level check was added upstream in LORIS 27.0.4, but this
+        // one was left without one). Timepoint has no getProjectID() before
+        // LORIS 24, so the project is read from the visit's candidate.
+        try {
+            $candidate = \NDB_Factory::singleton()
+                ->candidate($this->_visit->getCandID());
+        } catch (\NotFound | \LorisException $e) {
+            return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+        }
+
+        if (!$user->hasPermission('imaging_browser_qc')
+            || !$user->hasProject($candidate->getProjectID())
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'You can not edit imaging QC for this visit'
+            );
+        }
+
+        $inputcandid = $data['Meta']['CandID'] ?? null;
+        if ($inputcandid != $this->_visit->getCandID()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Candidate from URL does not match JSON metadata.'
+            );
+        }
+
+        $inputvisit = $data['Meta']['Visit'] ?? null;
+        if ($inputvisit != $this->_visit->getVisitLabel()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Visit from URL does not match JSON metadata.'
+            );
+        }
+
+        $inputfilename = $data['Meta']['File'] ?? null;
+        if ($inputfilename != $this->_image->getFileInfo()->getFilename()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'File name from URL does not match JSON metadata.'
+            );
+        }
+
+        $inputqcstatus = $data['QCStatus'] ?? null;
+        $inputselected = $data['Selected'] ?? null;
+
+        // TODO :: This is (and was) not checking or handling Caveats
+        try {
+            $this->_image->saveQcStatus(
+                new \LORIS\ImageQcStatus(
+                    $inputqcstatus,
+                    $inputselected
+                )
+            );
+        } catch (\DatabaseException $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'QC status not updated.'
+            );
+        } catch (\DomainException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        } catch (\Throwable $e) {
+            return  new \LORIS\Http\Response\JSON\BadRequest();
+        }
+
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
     /**
      * Implements the ETagCalculator interface
      *
