@@ -70,7 +70,29 @@ class Files extends \NDB_Page
         $config = \NDB_Factory::singleton()->config();
         $path   = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
-        );
+    );
+        // The frontend restricts files to the user's sites, but the endpoint
+        // used to serve any file by name. Mirror the frontend check here.
+        if ($request->getMethod() != "POST") {
+            $factory = \NDB_Factory::singleton();
+            $user    = $factory->user();
+            $db      = $factory->database();
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
+            // PHP 7: hasCenter() takes the integer directly. \CenterID, used
+            // upstream, does not exist before LORIS 24.
+            if (!$user->hasCenter((int)$forSite)) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
+            }
+        }	
         switch ($request->getMethod()) {
         case "POST":
             if ($this->uploadDocFile($request)) {
