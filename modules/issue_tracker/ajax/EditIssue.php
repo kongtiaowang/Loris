@@ -91,7 +91,32 @@ function editIssue()
 
     $issueID = $_POST['issueID'];
     $issueValues['lastUpdatedBy'] = $user->getData('UserID');
-
+   // The front end restricts editing to developers and to the user who
+    // reported the issue, but this script is reachable by any authenticated
+    // user, so the same check has to be made on the back end. A falsy issueID
+    // means a new issue is being created, which any issue tracker user may do.
+    if (!empty($issueID)) {
+        $issue = $db->pselectRow(
+            "SELECT reporter, centerID FROM issues WHERE issueID=:issueID",
+            ['issueID' => $issueID]
+        );
+        if ($issue === null
+            || (!$user->hasPermission('issue_tracker_developer')
+                && $issue['reporter'] !== $user->getUsername())
+        ) {
+            header("HTTP/1.1 403 Forbidden");
+            exit;
+        }
+        // Users who cannot access all profiles may only edit issues belonging
+        // to their own sites.
+        if (!$user->hasPermission('access_all_profiles')
+            && !empty($issue['centerID'])
+            && !$user->hasCenter((int)$issue['centerID'])
+        ) {
+            header("HTTP/1.1 403 Forbidden");
+            exit;
+        }
+    }
     $validatedInput = validateInput($validateValues);
     if (array_key_exists('sessionID', $validatedInput)) {
         $issueValues['sessionID'] = $validatedInput['sessionID'];
