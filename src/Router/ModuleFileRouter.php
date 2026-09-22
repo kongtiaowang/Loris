@@ -73,13 +73,29 @@ class ModuleFileRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $fullpath = (
-            $this->moduledir .
-            "/" .
-            $this->subdir .
-            "/"
-            . $request->getURI()->getPath()
-        );
+       $subpath = ltrim($request->getURI()->getPath(), '/');
+        // The URI path comes from the user and may contain ".." sequences to
+        // escape the served directory. Resolve it and confirm it is still
+        // underneath it before serving the file.
+        if (strpos($subpath, '..') !== false) {
+            $basedir     = realpath($this->moduledir . "/" . $this->subdir);
+            $resolved    = realpath(
+                $this->moduledir . "/" . $this->subdir . "/" . $subpath
+            );
+            // strpos() is used instead of str_starts_with(), which needs PHP 8.
+            if (($basedir === false) || ($resolved === false)
+                || (strpos($resolved, $basedir) !== 0)
+            ) {
+                return (new \LORIS\Http\Error(
+                    $request,
+                    404,
+                    htmlspecialchars($request->getURI()->getPath())
+                    . ": File not found"
+                ))
+                    ->withHeader("Content-Type", "text/html");
+            }
+        }
+        $fullpath = $this->moduledir . "/" . $this->subdir . "/" . $subpath;
 
         if (is_file($fullpath)) {
             $resp = (new \LORIS\Http\Response)
