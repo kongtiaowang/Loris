@@ -12,7 +12,7 @@
         "psr/http-server-middleware" : "*",
         "laminas/laminas-diactoros" : "~1.8.4",
         "ext-json": "*",
-        "bjeavons/zxcvbn-php": "^0.4",
+        "bjeavons/zxcvbn-php": "^1.4",
         "laravel/helpers": "^1.4"
     },
     "require-dev" : {
