@@ -671,7 +671,8 @@ class Utility
             array('fname' => $fullname)
         );
         if (is_array($instrument) && count($instrument)) {
-            list(,$test_name) = each($instrument[0]);
+            // each() was removed in PHP 8.0.
+            $test_name = (string) array_values($instrument[0])[0];
         }
         return $test_name;
     }

@@ -401,7 +401,7 @@ class TimePoint
          * which returns values in string format. CandID is used here to
          * ensure we return a validated CandID object.
          */
-        return new CandID($this->_timePointInfo["CandID"]);
+        return new CandID(strval($this->_timePointInfo["CandID"]));
     }
 
     /**
